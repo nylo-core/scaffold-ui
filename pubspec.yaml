@@ -1,0 +1,39 @@
+name: scaffold_ui
+description: "Authentication package for Flutter. Scaffold Supabase, Firebase, Laravel, and more."
+version: 1.0.0
+homepage: https://nylo.dev
+repository: https://github.com/nylo-core/scaffold_ui
+issue_tracker: https://github.com/nylo-core/scaffold_ui/issues
+documentation: https://github.com/nylo-core/scaffold_ui
+funding:
+  - https://github.com/sponsors/agordn52
+topics:
+  - scaffold-ui
+  - laravel
+  - supabase
+
+environment:
+  sdk: '>=3.1.4 <4.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  args: ^2.6.0
+  nylo_support: ^6.0.0
+  flutter:
+    sdk: flutter
+  dart_console: ^4.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+screenshots:
+  - description: The package logo.
+    path: screenshots/logo.png
+
+flutter:
+  assets:
+    - images/sonoran_desert_1.jpg
+    - images/sonoran_desert_2.png
+    - images/sonoran_desert_3.jpg
