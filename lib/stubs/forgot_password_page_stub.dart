@@ -6,7 +6,6 @@ import 'package:nylo_framework/nylo_framework.dart';
 import '/app/controllers/forgot_password_controller.dart';
 
 class ForgotPasswordPage extends NyStatefulWidget<ForgotPasswordController> {
-  
   static RouteView path = ("/forgot-password", (_) => ForgotPasswordPage());
 
   ForgotPasswordPage() : super(child: () => _ForgotPasswordPageState());
@@ -15,7 +14,7 @@ class ForgotPasswordPage extends NyStatefulWidget<ForgotPasswordController> {
 class _ForgotPasswordPageState extends NyState<ForgotPasswordPage> {
 
   @override
-  Widget build(BuildContext context) {
+  Widget view(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

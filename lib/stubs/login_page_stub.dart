@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 
 class LoginPage extends NyStatefulWidget<LoginController> {
- 
   static RouteView path = ("/login", (_) => LoginPage());
 
   LoginPage() : super(child: () => _LoginPageState()); 
@@ -19,7 +18,7 @@ class _LoginPageState extends NyState<LoginPage> {
   NyLoginForm form = NyLoginForm();
 
   @override
-  Widget build(BuildContext context) {
+  Widget view(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

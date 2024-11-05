@@ -11,7 +11,6 @@ import 'package:nylo_framework/nylo_framework.dart';
 import '/bootstrap/extensions.dart';
 
 class LandingPage extends NyStatefulWidget {
-  
   static RouteView path = ("/landing", (_) => LandingPage());
 
   LandingPage() : super(child: () => _LandingPageState());
@@ -20,7 +19,7 @@ class LandingPage extends NyStatefulWidget {
 class _LandingPageState extends NyState<LandingPage> {
 
   @override
-  Widget build(BuildContext context) {
+  Widget view(BuildContext context) {
     return Scaffold(
         extendBody: true,
         extendBodyBehindAppBar: true,

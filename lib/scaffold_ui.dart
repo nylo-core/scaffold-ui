@@ -3,6 +3,9 @@ library auth_slate;
 
 /// Basic
 import '/stubs/basic/basic_forgot_password_controller_stub.dart';
+import '/stubs/basic/basic_login_controller_stub.dart';
+import '/stubs/basic/basic_register_controller_stub.dart';
+import '/stubs/basic/basic_dashboard_stub.dart';
 
 /// Supabase
 import '/models/ny_supabase_slate_config.dart';
@@ -16,6 +19,7 @@ import '/stubs/supabase/supabase_logout_event_stub.dart';
 
 /// Laravel
 import '/stubs/laravel/laravel_register_controller_stub.dart';
+import '/stubs/laravel/laravel_login_controller_stub.dart';
 import '/stubs/laravel/laravel_dashboard_stub.dart';
 import '/models/ny_laravel_slate_config.dart';
 import '/stubs/laravel/laravel_auth_response.dart';
@@ -28,10 +32,7 @@ import 'stubs/laravel/laravel_forgot_password_controller_stub.dart';
 import '/stubs/login_form.dart';
 import '/stubs/register_form.dart';
 import '/stubs/landing_stub.dart';
-import '/stubs/login_controller_stub.dart';
-import 'stubs/basic/basic_register_controller_stub.dart';
 import 'stubs/laravel/laravel_user_model_stub.dart';
-import 'stubs/basic/basic_dashboard_stub.dart';
 import '/stubs/register_page_stub.dart';
 import '/stubs/forgot_password_page_stub.dart';
 import '/stubs/login_page_stub.dart';
@@ -91,7 +92,7 @@ List<NyTemplate> basicRun() => [
         name: "login_controller",
         saveTo: controllersFolder,
         pluginsRequired: ["nylo_framework"],
-        stub: stubLoginController(),
+        stub: stubBasicLoginController(),
       ),
 
       NyTemplate(
@@ -182,7 +183,7 @@ List<NyTemplate> laravelRun(NyLaravelSlateConfig nyLaravelSlateConfig) => [
         name: "login_controller",
         saveTo: controllersFolder,
         pluginsRequired: ["nylo_framework"],
-        stub: stubLoginController(),
+        stub: stubLaravelLoginController(),
       ),
 
       NyTemplate(

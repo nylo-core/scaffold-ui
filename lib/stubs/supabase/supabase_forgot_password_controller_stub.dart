@@ -9,11 +9,6 @@ class ForgotPasswordController extends Controller {
 
   TextEditingController textEmailForgotPassword = TextEditingController();
 
-  construct(BuildContext context) {
-    super.construct(context);
-
-  }
-
   /// Send password reset email
   forgotPassword() async {
     String email = textEmailForgotPassword.text;

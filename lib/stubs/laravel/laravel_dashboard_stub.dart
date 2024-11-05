@@ -9,7 +9,6 @@ import '/bootstrap/helpers.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 
 class DashboardPage extends NyStatefulWidget {
-  
   static RouteView path = ("/dashboard", (_) => DashboardPage());
 
   DashboardPage() : super(child: () => _DashboardPageState());
@@ -25,7 +24,7 @@ class _DashboardPageState extends NyState<DashboardPage> {
   };
   
   @override
-  Widget build(BuildContext context) {
+  Widget view(BuildContext context) {
     return Scaffold(
       backgroundColor: "ebf0f4".toHexColor(),
       appBar: AppBar(

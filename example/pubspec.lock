@@ -101,10 +101,10 @@ packages:
     dependency: transitive
     description:
       name: dart_console
-      sha256: eae9ddd7bb69477a6e9821c75d575874e290887da09292732a35ab510d1de713
+      sha256: "30776f697c440fdf5615a5b4fa318fd03c0788a2aeb30625a5972e83592b40c5"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.0"
+    version: "4.1.1"
   date_field:
     dependency: transitive
     description:
@@ -202,26 +202,26 @@ packages:
     dependency: transitive
     description:
       name: flutter_local_notifications
-      sha256: "674173fd3c9eda9d4c8528da2ce0ea69f161577495a9cc835a2a4ecd7eadeb35"
+      sha256: "725145682706fb0e5a30f93e5cb64f3df7ed7743de749bd555b22bf75ee718c0"
       url: "https://pub.dev"
     source: hosted
-    version: "17.2.4"
+    version: "18.0.0"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
       name: flutter_local_notifications_linux
-      sha256: c49bd06165cad9beeb79090b18cd1eb0296f4bf4b23b84426e37dd7c027fc3af
+      sha256: "8f685642876742c941b29c32030f6f4f6dacd0e4eaecb3efbb187d6a3812ca01"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "5.0.0"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
       name: flutter_local_notifications_platform_interface
-      sha256: "85f8d07fe708c1bdcf45037f2c0109753b26ae077e9d9e899d55971711a4ea66"
+      sha256: "6c5b83c86bf819cdb177a9247a3722067dd8cc6313827ce7c77a4b238a26fd52"
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "8.0.0"
   flutter_localizations:
     dependency: transitive
     description: flutter
@@ -409,10 +409,10 @@ packages:
     dependency: transitive
     description:
       name: nylo_support
-      sha256: b858fda3f0553fccc0094ef2cd7315c58c9ff3fa16aa087f2a210a10146afd05
+      sha256: "576feb801809c241ea2da1bcf129d7474df280d109d0a68818f88a0cf1c2b3e1"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "6.1.0"
   path:
     dependency: transitive
     description:
@@ -531,7 +531,7 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.0.0"
+    version: "1.1.0"
   shared_preferences:
     dependency: transitive
     description:
