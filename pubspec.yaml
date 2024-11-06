@@ -1,6 +1,6 @@
 name: scaffold_ui
 description: "Authentication package for Flutter. Scaffold Supabase, Firebase, Laravel, and more."
-version: 1.1.1
+version: 1.1.2
 homepage: https://nylo.dev
 repository: https://github.com/nylo-core/scaffold_ui
 issue_tracker: https://github.com/nylo-core/scaffold_ui/issues
