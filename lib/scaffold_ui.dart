@@ -1,5 +1,5 @@
 // ignore: unnecessary_library_name
-library auth_slate;
+library scaffold_ui;
 
 /// Basic
 import '/stubs/basic/basic_forgot_password_controller_stub.dart';
@@ -45,7 +45,7 @@ import 'package:nylo_support/metro/models/ny_template.dart';
 | Add your stub templates inside the /stubs directory.
 | Then add them into the `run` method like in the example below.
 | Install the package in your project and run the below in the terminal.
-| "dart run auth_slate:main"
+| "dart run scaffold_ui:main auth"
 |
 | Learn more https://nylo.dev/docs/6.x
 |-------------------------------------------------------------------------- */

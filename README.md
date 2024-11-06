@@ -17,7 +17,7 @@ This will add a line like this to your package's pubspec.yaml (and run an implic
 ``` dart 
 dependencies:
   ...
-  scaffold_ui: ^1.1.0
+  scaffold_ui: ^1.1.1
 ```
 
 ## Usage
@@ -64,7 +64,13 @@ Now, run `dart run scaffold_ui:main auth` and select `laravel`.
 
 It will ask you for your Laravel project URL.
 
-Check out the Laravel package [here](https://github.com/nylo-core/scaffold_ui) for more information.
+Check out the Laravel package [here](https://github.com/nylo-core/laravel-nylo-auth) for more information.
+
+## Basic Installation
+
+If you select `basic` when running `dart run scaffold_ui:main auth`, it will scaffold a basic authentication UI.
+
+You will need to implement the authentication logic yourself.
 
 ## Changelog
 Please see [CHANGELOG](https://github.com/nylo-core/nylo-core/scaffold_ui/CHANGELOG.md) for more information what has changed recently.
