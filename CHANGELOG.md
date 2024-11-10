@@ -1,3 +1,7 @@
+## [1.1.3] - 2024-11-10
+
+* Dependency updates
+
 ## [1.1.2] - 2024-11-06
 
 * Fix GitHub actions
