@@ -7,11 +7,6 @@ import 'package:nylo_framework/nylo_framework.dart';
 
 class RegisterController extends Controller {
 
-  construct(BuildContext context) {
-    super.construct(context);
-
-  }
-
   /// Register the user
   register(String name, String email, String password) async {
     final sb.SupabaseClient supabase = backpackRead('supabase');

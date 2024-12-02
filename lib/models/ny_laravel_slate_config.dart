@@ -1,3 +1,4 @@
+/// Laravel Slate configuration model
 class NyLaravelSlateConfig {
   String url;
 

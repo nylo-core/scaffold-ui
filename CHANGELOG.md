@@ -1,3 +1,8 @@
+## [1.1.5] - 2024-12-02
+
+* refactor stubs
+* Dependency updates
+
 ## [1.1.4] - 2024-11-25
 
 * Dependency updates

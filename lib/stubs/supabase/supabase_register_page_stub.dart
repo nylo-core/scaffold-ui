@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 
 class RegisterPage extends NyStatefulWidget<RegisterController> {
-  
   static RouteView path = ("/register", (_) => RegisterPage());
 
   RegisterPage() : super(child: () => _RegisterPageState());

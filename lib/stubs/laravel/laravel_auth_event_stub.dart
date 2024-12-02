@@ -19,7 +19,7 @@ class DefaultListener extends NyListener {
     if (laravelAuthResponse == null) {
       return;
     }
-    authAuthenticate(data: laravelAuthResponse);
+    await Auth.authenticate(data: laravelAuthResponse);
     await routeToAuthenticatedRoute();
   }
 }

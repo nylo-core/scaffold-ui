@@ -6,11 +6,6 @@ import 'package:flutter/widgets.dart';
 
 class LoginController extends Controller {
 
-  construct(BuildContext context) {
-    super.construct(context);
-
-  }
-
   /// Login the user
   login(String email, String password) async {
 

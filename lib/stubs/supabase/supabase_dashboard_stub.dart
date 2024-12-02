@@ -8,7 +8,6 @@ import '/bootstrap/helpers.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 
 class DashboardPage extends NyStatefulWidget {
-  
   static RouteView path = ("/dashboard", (_) => DashboardPage());
 
   DashboardPage() : super(child: () => _DashboardPageState());

@@ -17,7 +17,7 @@ This will add a line like this to your package's pubspec.yaml (and run an implic
 ``` dart 
 dependencies:
   ...
-  scaffold_ui: ^1.1.4
+  scaffold_ui: ^1.1.5
 ```
 
 ## Usage
