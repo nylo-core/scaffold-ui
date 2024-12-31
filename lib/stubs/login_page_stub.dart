@@ -1,9 +1,8 @@
 String stubLoginPage() => '''
 import '/resources/pages/forgot_password_page.dart';
-import '/resources/widgets/buttons/buttons.dart';
-
 import '/app/controllers/login_controller.dart';
 import '/resources/widgets/logo_widget.dart';
+import '/resources/widgets/buttons/buttons.dart';
 import 'package:flutter/material.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 
