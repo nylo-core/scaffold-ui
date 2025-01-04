@@ -1,3 +1,7 @@
+## [1.1.9] - 2024-01-04
+
+* Dependency updates
+
 ## [1.1.8] - 2024-12-31
 
 * Update copyright year
