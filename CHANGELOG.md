@@ -1,3 +1,7 @@
+## [1.1.10] - 2024-01-13
+
+* Dependency updates
+ 
 ## [1.1.9] - 2024-01-04
 
 * Dependency updates
