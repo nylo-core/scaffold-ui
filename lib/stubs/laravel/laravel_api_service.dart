@@ -17,7 +17,7 @@ class LaravelApiService extends NyApiService {
   LaravelApiService({BuildContext? buildContext}) : super(buildContext, decoders: modelDecoders);
 
   @override
-  String get baseUrl => 'http://laravelauthtest.test/app/v1';
+  String get baseUrl => '${nyLaravelSlateConfig.url}/app/v1';
 
   String get bearerToken {
     Map<String, dynamic> data = authData();

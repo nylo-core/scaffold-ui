@@ -1,3 +1,9 @@
+## [1.1.11] - 2024-01-14
+
+* Fix Laravel api service stub
+* Update `NyLaravelSlateConfig` to remove trailing slash from urls
+* Dependency updates
+
 ## [1.1.10] - 2024-01-13
 
 * Dependency updates
