@@ -1,3 +1,7 @@
+## [1.1.12] - 2024-01-16
+
+* Dependency updates
+
 ## [1.1.11] - 2024-01-14
 
 * Fix Laravel api service stub
