@@ -35,51 +35,53 @@ class _DashboardPageState extends NyState<DashboardPage> {
         elevation: 0,
       ),
       body: SafeArea(
-         child: afterLoad(child: () => Container(
-           padding: EdgeInsets.all(16),
-           decoration: BoxDecoration(
-             borderRadius: BorderRadius.only(topRight: Radius.circular(20), topLeft: Radius.circular(20)),
-             color: Colors.white
-           ),
-           child: Column(
-             crossAxisAlignment: CrossAxisAlignment.center,
-             mainAxisAlignment: MainAxisAlignment.center,
-             children: [
-               Column(
-                 children: [
-                   Container(
-                     margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                     padding: EdgeInsets.all(15),
-                     decoration: BoxDecoration(
-                         color: ThemeColor.get(context).background,
-                         borderRadius: BorderRadius.circular(8),
-                         boxShadow: [
-                           BoxShadow(
-                               color: Colors.grey.shade200,
-                               spreadRadius: 0.1,
-                               blurRadius: 20
-                           )
-                         ]),
-                     child: Icon(Icons.key),
-                   ),
-                   Text("Logged in").headingMedium(),
-                   Divider(),
-                   Text("Auth: \${_user?.email}"),
-                 ],
-               ),
-               Container(
-                 margin: EdgeInsets.only(top: 20),
-                 width: double.infinity,
-                 child: MaterialButton(
-                   child: Text("Logout"), onPressed: () async {
-                     event<LogoutEvent>();
-                     await Auth.logout();
-                     routeToInitial();
-                 },),
-               )
-             ],
-           ),
-         ),)
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topRight: Radius.circular(20),
+                    topLeft: Radius.circular(20)),
+                color: Colors.white
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 16),
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: ThemeColor
+                              .get(context)
+                              .background,
+                          borderRadius: BorderRadius.circular(8),
+                          boxShadow: [
+                            BoxShadow(
+                                color: Colors.grey.shade200,
+                                spreadRadius: 0.1,
+                                blurRadius: 20
+                            )
+                          ]),
+                      child: Icon(Icons.key),
+                    ),
+                    Text("Logged in").headingMedium(),
+                    Divider(),
+                    Text("Auth: \${_user?.email}"),
+                  ],
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 20),
+                  width: double.infinity,
+                  child: MaterialButton(
+                    child: Text("Logout"), onPressed: () async {
+                    await event<LogoutEvent>();
+                  },),
+                )
+              ],
+            ),
+          )
       ),
     );
   }
