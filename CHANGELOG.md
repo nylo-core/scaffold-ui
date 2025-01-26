@@ -1,3 +1,7 @@
+## [1.1.14] - 2025-01-26
+
+* Dependency updates
+
 ## [1.1.13] - 2024-01-16
 
 * Update Laravel dashboard stub
