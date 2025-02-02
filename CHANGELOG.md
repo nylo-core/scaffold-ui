@@ -1,3 +1,9 @@
+## [1.2.0] - 2025-02-02
+
+* Ability to scaffold in app payments via RevenueCat
+* Use `dart run scaffold_ui:main iap` and then select `revenuecat`
+* Dependency updates
+
 ## [1.1.14] - 2025-01-26
 
 * Dependency updates

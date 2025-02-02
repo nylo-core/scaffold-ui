@@ -1,80 +1,103 @@
 # Scaffold UI
 
-Scaffolds an authentication UI in your [Nylo](https://nylo.dev) project.
+Instantly add production-ready authentication and in-app purchase UIs to your [Nylo](https://nylo.dev) Flutter applications.
 
-### Getting Started
+## Overview
 
-In your Flutter project add the dependency:
+Scaffold UI is a powerful CLI tool that helps Flutter developers quickly integrate common UI patterns into their Nylo projects. Instead of spending hours building authentication flows or in-app purchase screens from scratch, you can have a complete, customizable implementation in minutes.
 
-With Dart:
+## Features
 
-``` bash
-dart pub add scaffold_ui
-```
-
-This will add a line like this to your package's pubspec.yaml (and run an implicit dart pub get):
-
-``` dart 
-dependencies:
-  ...
-  scaffold_ui: ^1.1.14
-```
-
-## Usage
-
-Step 1: Run the below command in your project.
-
-``` bash
+### 🔐 Authentication UI
+Generate a complete authentication flow with a single command:
+```bash
 dart run scaffold_ui:main auth
 ```
 
-Select from the following options:
+Choose from three authentication backends:
+- **[Supabase](https://supabase.com)** - Full authentication service with ready-to-use UI components
+- **[Laravel](https://laravel.com)** - Complete integration with Laravel Sanctum, including API services
+- **Basic** - Clean authentication UI templates for custom implementation
 
-- Supabase - `supabase`
-- Laravel - `laravel`
-- Basic - `basic`
-
-## Supabase Installation
-
-You'll first need a Supabase account and a project setup.
-
-After you run `dart run scaffold_ui:main auth` and select `supabase`, you'll be prompted to enter your Supabase URL and Anon Key.
-
-## Laravel Installation
-
-You'll first need a Laravel project setup.
-
-You're `User` model should be using the `HasApiTokens` trait ([Laravel Sanctum](https://laravel.com/docs/11.x/sanctum)).
-
-Next, you'll need to install the Laravel composer package [laravel-nylo-auth](https://github.com/nylo-core/laravel-nylo-auth).
-
-You can install the package via composer:
-
-``` bash
-composer require nylo/laravel-nylo-auth
+### 💳 In-App Purchases (iOS & Android)
+Add subscription flows and paywalls with:
+```bash
+dart run scaffold_ui:main iap
 ```
 
-You can publish with:
+Currently supports:
+- **RevenueCat** - Complete integration with SDK and pre-built UI components for subscription management
 
-``` bash
-php artisan vendor:publish --provider="Nylo\LaravelNyloAuth\LaravelNyloAuthServiceProvider"
+## Installation
+
+Add scaffold_ui to your Flutter project:
+
+```bash
+dart pub add scaffold_ui
 ```
 
-Now, run `dart run scaffold_ui:main auth` and select `laravel`.
+This will add the following to your pubspec.yaml:
+```yaml
+dependencies:
+  scaffold_ui: ^1.2.0
+```
 
-It will ask you for your Laravel project URL.
+## Setup Guides
 
-Check out the Laravel package [here](https://github.com/nylo-core/laravel-nylo-auth) for more information.
+### Supabase Authentication
 
-## Basic Installation
+1. Create a Supabase account and project at [supabase.com](https://supabase.com)
+2. Run the auth scaffold command:
+   ```bash
+   dart run scaffold_ui:main auth
+   ```
+3. Select `supabase` when prompted
+4. Enter your Supabase URL and Anon Key
+5. The tool will automatically:
+    - Configure Supabase authentication
+    - Generate UI components
+    - Set up necessary services
 
-If you select `basic` when running `dart run scaffold_ui:main auth`, it will scaffold a basic authentication UI.
+### Laravel Authentication
 
-You will need to implement the authentication logic yourself.
+Prerequisites:
+- A Laravel project with [Sanctum](https://laravel.com/docs/11.x/sanctum) configured
+- Your User model must use the `HasApiTokens` trait
+
+1. Install the Laravel package:
+   ```bash
+   composer require nylo/laravel-nylo-auth
+   ```
+
+2. Publish the package assets:
+   ```bash
+   php artisan vendor:publish --provider="Nylo\LaravelNyloAuth\LaravelNyloAuthServiceProvider"
+   ```
+
+3. Run the auth scaffold command:
+   ```bash
+   dart run scaffold_ui:main auth
+   ```
+
+4. Select `laravel` and enter your project URL
+5. For additional Laravel configuration options, visit the [laravel-nylo-auth](https://github.com/nylo-core/laravel-nylo-auth) repository
+
+### Basic Authentication
+
+For custom authentication implementations:
+
+1. Run `dart run scaffold_ui:main auth`
+2. Select `basic`
+3. The tool will generate UI components that you can customize with your authentication logic
+
+## Documentation
+
+For detailed documentation and examples, visit our [official documentation](https://docs.nylo.dev/scaffold-ui).
 
 ## Changelog
-Please see [CHANGELOG](https://github.com/nylo-core/nylo-core/scaffold_ui/CHANGELOG.md) for more information what has changed recently.
 
-## Licence
+See [CHANGELOG](https://github.com/nylo-core/nylo-core/scaffold_ui/CHANGELOG.md) for recent changes.
 
-The MIT License (MIT). Please view the [License](https://github.com/nylo-core/nylo-core/scaffold_ui/blob/master/licence) File for more information.
+## License
+
+This project is licensed under the MIT License - see the [License](https://github.com/nylo-core/nylo-core/scaffold_ui/blob/master/licence) file for details.
