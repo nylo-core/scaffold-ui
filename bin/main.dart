@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:scaffold_ui/models/ny_revenuecat_slate_config.dart';
 import 'package:scaffold_ui/scaffold_ui.dart';
 import 'package:scaffold_ui/cli_dialog/src/dialog.dart';
 import 'package:scaffold_ui/models/ny_laravel_slate_config.dart';
@@ -11,17 +12,107 @@ import 'package:nylo_support/metro/models/ny_template.dart';
 void main(List<String> arguments) async {
   if (arguments.length != 1) {
     MetroConsole.writeInRed("Invalid arguments");
-    MetroConsole.writeInRed("Usage: dart run scaffold_ui:main auth");
+    MetroConsole.writeInRed(
+        "Authentication Usage: dart run scaffold_ui:main auth\nIn-app Purchases Usage: dart run scaffold_ui:main iap");
     exit(1);
   }
 
   String command = arguments[0];
-  if (command != 'auth') {
+  if (!["iap", "auth"].contains(command)) {
     MetroConsole.writeInRed("Invalid command");
-    MetroConsole.writeInRed("Usage: dart run scaffold_ui:main auth");
+    MetroConsole.writeInRed(
+        "Authentication Usage: dart run scaffold_ui:main auth\nIn-app Purchases Usage: dart run scaffold_ui:main iap");
     exit(1);
   }
 
+  switch (command) {
+    case 'auth':
+      await auth();
+      break;
+    case 'iap':
+      await iap();
+      break;
+    default:
+  }
+  exit(0);
+}
+
+iap() async {
+  final dialogQuestions = CliDialog(listQuestions: [
+    [
+      {
+        'question': 'Which service would you like to use?',
+        'options': [
+          'RevenueCat',
+        ]
+      },
+      'iap'
+    ],
+  ]).ask();
+
+  String iap = dialogQuestions['iap'];
+
+  switch (iap) {
+    case 'RevenueCat':
+      MetroConsole.writeInGreen("Installing RevenueCat");
+      // install RevenueCat
+      await MetroService.addPackage("purchases_flutter");
+      await MetroService.addPackage("purchases_ui_flutter");
+
+      // ios
+      final dialogRevenueCatAppleKey = CliDialog(questions: [
+        [
+          "What is your Apple RevenueCat API Key? If you don't know, enter 'n'",
+          'apple_revenuecat_api_key'
+        ]
+      ]);
+      String? appleRevenueCatApiKey =
+          dialogRevenueCatAppleKey.ask()['apple_revenuecat_api_key'];
+      if (appleRevenueCatApiKey == 'n') {
+        appleRevenueCatApiKey = "";
+      }
+
+      // android
+      final dialogRevenueCatAndroidKey = CliDialog(questions: [
+        [
+          "What is your Android RevenueCat API Key? If you don't know, enter 'n'",
+          'android_revenuecat_api_key'
+        ]
+      ]);
+      String? androidRevenueCatApiKey =
+          dialogRevenueCatAndroidKey.ask()['android_revenuecat_api_key'];
+      if (androidRevenueCatApiKey == 'n') {
+        androidRevenueCatApiKey = "";
+      }
+
+      // config
+      NyRevenueCatSlateConfig nyRevenueCatSlateConfig = NyRevenueCatSlateConfig(
+        appleAppId: appleRevenueCatApiKey,
+        androidAppId: androidRevenueCatApiKey,
+      );
+
+      String iosSetupInfo = "";
+      if (appleRevenueCatApiKey != "") {
+        iosSetupInfo = "IOS Setup";
+        iosSetupInfo += "\n- Open the `ios/Runner.xcworkspace` file in Xcode";
+        iosSetupInfo += "\n- Navigate to the `Runner` target";
+        iosSetupInfo +=
+            "\n- Under the `Signing & Capabilities` tab, add the `In-App Purchase` capability";
+        iosSetupInfo += "\n- Run \"cd ios && pod repo update\"";
+        iosSetupInfo += "\n\n";
+      }
+
+      List<NyTemplate> templates = revenueCatRun(nyRevenueCatSlateConfig);
+      await MetroService.createSlate(templates, hasForceFlag: true);
+      MetroConsole.writeInGreen(
+          "RevenueCat scaffolding complete 🎉\n\nTo view the paywall, use 'routeTo(PaywallPage.path)';\n\n${iosSetupInfo}Learn more: https://revenuecat.com/docs/flutter");
+      break;
+    default:
+      break;
+  }
+}
+
+auth() async {
   final dialogQuestions = CliDialog(listQuestions: [
     [
       {
@@ -29,6 +120,7 @@ void main(List<String> arguments) async {
         'options': [
           'Supabase',
           'Laravel',
+          'Firebase',
           'Basic',
         ]
       },
@@ -88,6 +180,28 @@ void main(List<String> arguments) async {
       MetroConsole.writeInGreen(
           "Laravel scaffolding is ready 🎉\nLearn more: https://laravel.com");
       break;
+    case 'Firebase':
+      MetroConsole.writeInGreen("Installing Firebase");
+      // install firebase
+      await MetroService.addPackage("firebase_core");
+      await MetroService.addPackage("firebase_auth");
+      await MetroService.addPackage("cloud_firestore");
+
+      List<NyTemplate> templates = firebaseRun();
+      await MetroService.createSlate(templates, hasForceFlag: true);
+
+      String firebaseInfo = "Setup Firebase";
+      firebaseInfo +=
+          "\n- Create a Firebase project: https://console.firebase.google.com";
+      firebaseInfo +=
+          "\n- Download flutterfire: https://firebase.google.com/docs/flutter/setup";
+      firebaseInfo += "\n- Run `flutterfire configure`";
+      firebaseInfo +=
+          "\n- Enable Email/Password sign-in method in Firebase Console";
+
+      MetroConsole.writeInGreen(
+          "Firebase Auth scaffolding has been setup 🎉\n\n$firebaseInfo\n\nLearn more: https://firebase.google.com/docs/auth/flutter/start");
+      break;
     case 'Basic':
       List<NyTemplate> templates = basicRun();
       await MetroService.createSlate(templates, hasForceFlag: true);
@@ -96,6 +210,4 @@ void main(List<String> arguments) async {
       break;
     default:
   }
-
-  exit(0);
 }

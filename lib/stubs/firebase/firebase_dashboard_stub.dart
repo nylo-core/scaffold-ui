@@ -1,12 +1,11 @@
-/// DashboardPage stub
-String stubSupabaseDashboard() => '''
+/// FirebasePage stub
+String stubFirebaseDashboard() => '''
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '/app/events/logout_event.dart';
 import '/bootstrap/extensions.dart';
 import '/bootstrap/helpers.dart';
 import 'package:nylo_framework/nylo_framework.dart';
-import '/app/models/user.dart';
 
 class DashboardPage extends NyStatefulWidget {
   static RouteView path = ("/dashboard", (_) => DashboardPage());
@@ -16,10 +15,9 @@ class DashboardPage extends NyStatefulWidget {
 
 class _DashboardPageState extends NyState<DashboardPage> {
 
-  // Supabase user
+  // Firebase user
   User? get _user {
-    SupabaseClient supabase = backpackRead('supabase');
-    return supabase.auth.currentUser;
+   return FirebaseAuth.instance.currentUser;
   }
   
   @override

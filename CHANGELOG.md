@@ -1,7 +1,8 @@
-## [1.2.0] - 2025-02-02
+## [1.2.0] - 2025-02-03
 
-* Ability to scaffold in app payments via RevenueCat
-* Use `dart run scaffold_ui:main iap` and then select `revenuecat`
+* Ability to scaffold in-app purchases via RevenueCat
+* Use `dart run scaffold_ui:main iap` and then select `RevenueCat`
+* Added `firebase` to the list of available auth scaffolds
 * Dependency updates
 
 ## [1.1.14] - 2025-01-26

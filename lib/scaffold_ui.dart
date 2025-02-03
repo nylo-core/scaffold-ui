@@ -1,6 +1,10 @@
 // ignore: unnecessary_library_name
 library scaffold_ui;
 
+import '/models/ny_revenuecat_slate_config.dart';
+import '/stubs/iap/revenuecat/paywall_page_stub.dart';
+import '/stubs/iap/revenuecat/revenue_cat_provider_stub.dart';
+
 /// Basic
 import '/stubs/basic/basic_forgot_password_controller_stub.dart';
 import '/stubs/basic/basic_login_controller_stub.dart';
@@ -16,6 +20,16 @@ import '/stubs/supabase/supabase_login_controller_stub.dart';
 import '/stubs/supabase/supabase_provider_stub.dart';
 import '/stubs/supabase/supabase_register_controller_stub.dart';
 import '/stubs/supabase/supabase_logout_event_stub.dart';
+
+/// Firebase
+import '/stubs/firebase/firebase_register_page_stub.dart';
+import '/stubs/firebase/firebase_dashboard_stub.dart';
+import '/stubs/firebase/firebase_forgot_password_controller_stub.dart';
+import '/stubs/firebase/firebase_login_controller_stub.dart';
+import '/stubs/firebase/firebase_provider_stub.dart';
+import '/stubs/firebase/firebase_register_controller_stub.dart';
+import '/stubs/firebase/firebase_logout_event_stub.dart';
+import '/stubs/firebase/firebase_user_model_stub.dart';
 
 /// Laravel
 import '/stubs/laravel/laravel_register_controller_stub.dart';
@@ -49,6 +63,30 @@ import 'package:nylo_support/metro/models/ny_template.dart';
 |
 | Learn more https://nylo.dev/docs/6.x
 |-------------------------------------------------------------------------- */
+
+/// In-App Purchases
+
+/// RevenueCat Slate
+List<NyTemplate> revenueCatRun(
+        NyRevenueCatSlateConfig nyRevenueCatSlateConfig) =>
+    [
+      /// PAGES
+      NyTemplate(
+        name: "paywall_page",
+        saveTo: pagesFolder,
+        pluginsRequired: ["nylo_framework", "purchases_ui_flutter"],
+        stub: stubRevenueCatPaywall(),
+      ),
+
+      /// CONFIG
+      NyTemplate(
+        name: "revenue_cat_provider",
+        saveTo: providerFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubRevenueCatProvider(nyRevenueCatSlateConfig),
+      ),
+    ];
+
 /// Basic Authentication Slate
 List<NyTemplate> basicRun() => [
       /// PAGES
@@ -328,6 +366,104 @@ List<NyTemplate> supabaseRun(NySupabaseSlateConfig nySupabaseSlateConfig) => [
           saveTo: eventsFolder,
           pluginsRequired: ["nylo_framework"],
           stub: stubSupabaseLogoutEvent()),
+    ];
+
+/// Firebase Authentication Slate
+List<NyTemplate> firebaseRun() => [
+      /// PAGES
+      NyTemplate(
+        name: "landing_page",
+        saveTo: pagesFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubLandingPage(),
+      ),
+
+      NyTemplate(
+        name: "login_page",
+        saveTo: pagesFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubLoginPage(),
+      ),
+
+      NyTemplate(
+        name: "register_page",
+        saveTo: pagesFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubFirebaseRegister(),
+      ),
+
+      NyTemplate(
+        name: "forgot_password_page",
+        saveTo: pagesFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubForgotPasswordPage(),
+      ),
+
+      NyTemplate(
+          name: "dashboard_page",
+          saveTo: pagesFolder,
+          pluginsRequired: ["nylo_framework"],
+          stub: stubFirebaseDashboard(),
+          options: {"is_auth_page": true}),
+
+      /// CONTROLLERS
+      NyTemplate(
+        name: "login_controller",
+        saveTo: controllersFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubFirebaseLoginController(),
+      ),
+
+      NyTemplate(
+        name: "register_controller",
+        saveTo: controllersFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubFirebaseRegisterController(),
+      ),
+
+      NyTemplate(
+        name: "forgot_password_controller",
+        saveTo: controllersFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubFirebaseForgotPasswordController(),
+      ),
+
+      /// PROVIDERS
+      NyTemplate(
+        name: "firebase_provider",
+        saveTo: providerFolder,
+        pluginsRequired: ["nylo_framework"],
+        stub: stubFirebaseProvider(),
+      ),
+
+      /// FORMS
+      NyTemplate(
+        name: "register_form",
+        saveTo: formsFolder,
+        pluginsRequired: [],
+        stub: stubRegisterForm(),
+      ),
+
+      NyTemplate(
+        name: "login_form",
+        saveTo: formsFolder,
+        pluginsRequired: [],
+        stub: stubLoginForm(),
+      ),
+
+      /// EVENTS
+      NyTemplate(
+          name: "logout_event",
+          saveTo: eventsFolder,
+          pluginsRequired: ["nylo_framework"],
+          stub: stubFirebaseLogoutEvent()),
+
+      /// MODELS
+      NyTemplate(
+          name: "user",
+          saveTo: modelsFolder,
+          pluginsRequired: ["nylo_framework"],
+          stub: stubFirebaseUserModel()),
     ];
 
 /*
