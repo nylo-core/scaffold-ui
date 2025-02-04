@@ -1,3 +1,7 @@
+## [1.2.1] - 2025-02-04
+
+* Dependency updates
+
 ## [1.2.0] - 2025-02-03
 
 * Ability to scaffold in-app purchases via RevenueCat
