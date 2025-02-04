@@ -20,7 +20,7 @@ environment:
 
 dependencies:
   args: ^2.6.0
-  nylo_support: ^6.18.0
+  nylo_support: ^6.19.0
   dart_console: ^4.1.1
   flutter:
     sdk: flutter
