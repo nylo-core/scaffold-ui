@@ -1,14 +1,14 @@
 String stubForgotPasswordPage() => '''
 import 'package:flutter/material.dart';
+import 'package:nylo_framework/nylo_framework.dart';
 import '/resources/widgets/buttons/buttons.dart';
 import '/resources/widgets/logo_widget.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 import '/app/controllers/forgot_password_controller.dart';
 
 class ForgotPasswordPage extends NyStatefulWidget<ForgotPasswordController> {
   static RouteView path = ("/forgot-password", (_) => ForgotPasswordPage());
 
-  ForgotPasswordPage() : super(child: () => _ForgotPasswordPageState());
+  ForgotPasswordPage({super.key}) : super(child: () => _ForgotPasswordPageState());
 }
 
 class _ForgotPasswordPageState extends NyState<ForgotPasswordPage> {
@@ -24,7 +24,7 @@ class _ForgotPasswordPageState extends NyState<ForgotPasswordPage> {
       ),
       body: SafeArea(
         minimum: EdgeInsets.all(16),
-        child: Container(
+        child: SizedBox(
           height: double.infinity,
           child: ListView(
             shrinkWrap: true,

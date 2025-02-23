@@ -2,16 +2,16 @@
 String stubSupabaseDashboard() => '''
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:nylo_framework/nylo_framework.dart';
 import '/app/events/logout_event.dart';
 import '/bootstrap/extensions.dart';
 import '/bootstrap/helpers.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 import '/app/models/user.dart';
 
 class DashboardPage extends NyStatefulWidget {
   static RouteView path = ("/dashboard", (_) => DashboardPage());
 
-  DashboardPage() : super(child: () => _DashboardPageState());
+  DashboardPage({super.key}) : super(child: () => _DashboardPageState());
 }
 
 class _DashboardPageState extends NyState<DashboardPage> {

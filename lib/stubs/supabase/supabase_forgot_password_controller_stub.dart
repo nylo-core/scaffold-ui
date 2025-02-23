@@ -1,7 +1,6 @@
 stubSupabaseForgotPasswordController() => '''
 import 'package:nylo_framework/nylo_framework.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'controller.dart';
 import 'package:flutter/widgets.dart';
 

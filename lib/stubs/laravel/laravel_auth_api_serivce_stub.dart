@@ -3,9 +3,9 @@ import '/models/ny_laravel_slate_config.dart';
 String stubLaravelAuthApiService(NyLaravelSlateConfig nyLaravelSlateConfig) =>
     '''
 import 'package:flutter/material.dart';
+import 'package:nylo_framework/nylo_framework.dart';
 import '/config/decoders.dart';
 import '/app/models/laravel_auth_response.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 
 /* LaravelAuthApiService
 | -------------------------------------------------------------------------

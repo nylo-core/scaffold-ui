@@ -1,13 +1,12 @@
 String stubSupabaseRegister() => '''
-import '/resources/widgets/buttons/buttons.dart';
-
-import '/app/controllers/register_controller.dart';
 import 'package:flutter/gestures.dart';
-import '/app/forms/register_form.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '/resources/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:nylo_framework/nylo_framework.dart';
+import '/resources/widgets/buttons/buttons.dart';
+import '/app/controllers/register_controller.dart';
+import '/app/forms/register_form.dart';
+import '/resources/widgets/logo_widget.dart';
 
 class RegisterPage extends NyStatefulWidget<RegisterController> {
   static RouteView path = ("/register", (_) => RegisterPage());

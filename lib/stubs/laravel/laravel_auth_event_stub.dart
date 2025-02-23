@@ -1,6 +1,6 @@
 String stubLaravelAuthEvent() => '''
-import '/app/models/laravel_auth_response.dart';
 import 'package:nylo_framework/nylo_framework.dart';
+import '/app/models/laravel_auth_response.dart';
 
 class LaravelAuthEvent implements NyEvent {
 

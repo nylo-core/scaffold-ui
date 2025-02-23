@@ -1,6 +1,6 @@
 stubBasicForgotPasswordController() => '''
-import 'controller.dart';
 import 'package:flutter/widgets.dart';
+import 'controller.dart';
 
 class ForgotPasswordController extends Controller {
 

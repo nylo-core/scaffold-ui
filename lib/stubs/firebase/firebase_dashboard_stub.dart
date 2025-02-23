@@ -1,16 +1,16 @@
 /// FirebasePage stub
 String stubFirebaseDashboard() => '''
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:nylo_framework/nylo_framework.dart';
 import 'package:flutter/material.dart';
 import '/app/events/logout_event.dart';
 import '/bootstrap/extensions.dart';
 import '/bootstrap/helpers.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 
 class DashboardPage extends NyStatefulWidget {
   static RouteView path = ("/dashboard", (_) => DashboardPage());
 
-  DashboardPage() : super(child: () => _DashboardPageState());
+  DashboardPage({super.key}) : super(child: () => _DashboardPageState());
 }
 
 class _DashboardPageState extends NyState<DashboardPage> {

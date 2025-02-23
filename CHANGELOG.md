@@ -1,3 +1,9 @@
+## [1.2.2] - 2025-02-23
+
+* Update stubs as per analysis
+* Update GitHub workflows
+* Dependency updates
+
 ## [1.2.1] - 2025-02-04
 
 * Dependency updates

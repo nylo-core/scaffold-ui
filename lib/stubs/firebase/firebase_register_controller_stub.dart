@@ -1,8 +1,8 @@
 String stubFirebaseRegisterController() => '''
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter_app/app/models/user.dart';
-import 'controller.dart';
 import 'package:nylo_framework/nylo_framework.dart';
+import 'controller.dart';
 
 class RegisterController extends Controller {
 

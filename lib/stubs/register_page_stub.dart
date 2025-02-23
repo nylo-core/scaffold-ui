@@ -1,18 +1,17 @@
 String stubRegisterPage() => '''
-import '/resources/widgets/buttons/buttons.dart';
-
-import '/app/controllers/register_controller.dart';
 import 'package:flutter/gestures.dart';
-import '/app/forms/register_form.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '/resources/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:nylo_framework/nylo_framework.dart';
+import '/resources/widgets/buttons/buttons.dart';
+import '/app/controllers/register_controller.dart';
+import '/app/forms/register_form.dart';
+import '/resources/widgets/logo_widget.dart';
 
 class RegisterPage extends NyStatefulWidget<RegisterController> {
   static RouteView path = ("/register", (_) => RegisterPage());
 
-  RegisterPage() : super(child: () => _RegisterPageState());
+  RegisterPage({super.key}) : super(child: () => _RegisterPageState());
 }
 
 class _RegisterPageState extends NyState<RegisterPage> {
@@ -44,29 +43,29 @@ class _RegisterPageState extends NyState<RegisterPage> {
 
             RichText(
               textAlign: TextAlign.center,
-              text: new TextSpan(
-                style: new TextStyle(
+              text: TextSpan(
+                style: TextStyle(
                   fontSize: 14.0,
                   color: Colors.black54,
                 ),
                 children: <TextSpan>[
-                  new TextSpan(
+                  TextSpan(
                     text: 'By tapping "Register", you agree to our ',
                   ),
-                  new TextSpan(
+                  TextSpan(
                     text: 'terms and conditions',
-                    style: new TextStyle(fontWeight: FontWeight.bold),
-                    recognizer: new TapGestureRecognizer()
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    recognizer: TapGestureRecognizer()
                       ..onTap = () => launchUrl(termsUrl()),
                   ),
-                  new TextSpan(text: '. You can also view our '),
-                  new TextSpan(
+                  TextSpan(text: '. You can also view our '),
+                  TextSpan(
                     text: 'privacy policy',
-                    style: new TextStyle(fontWeight: FontWeight.bold),
-                    recognizer: new TapGestureRecognizer()
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    recognizer: TapGestureRecognizer()
                       ..onTap = () => launchUrl(privacyUrl()),
                   ),
-                  new TextSpan(text: ' here.'),
+                  TextSpan(text: ' here.'),
                 ],
               ),
             ),

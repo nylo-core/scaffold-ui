@@ -14,7 +14,7 @@ class RegisterForm extends NyFormData {
 
   @override
   fields() => [
-     Field.text("Name",
+     Field.capitalizeWords("Name",
         autofocus: true,
          validate: FormValidator.notEmpty(),
         style: "compact"

@@ -1,8 +1,8 @@
 String stubLaravelLoginController() => '''
+import 'package:nylo_framework/nylo_framework.dart';
 import '/app/events/laravel_auth_event.dart';
 import '/app/models/laravel_auth_response.dart';
 import '/app/networking/laravel_auth_api_service.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 import 'controller.dart';
 
 class LoginController extends Controller {

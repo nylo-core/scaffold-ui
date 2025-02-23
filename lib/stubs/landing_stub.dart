@@ -1,19 +1,19 @@
 /// LandingPage stub
 String stubLandingPage() => '''
-import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:nylo_framework/nylo_framework.dart';
+import 'dart:async';
+import 'dart:ui';
 import '/resources/widgets/buttons/buttons.dart';
 import '/resources/pages/login_page.dart';
 import '/resources/pages/register_page.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 import '/bootstrap/extensions.dart';
 
 class LandingPage extends NyStatefulWidget {
   static RouteView path = ("/landing", (_) => LandingPage());
 
-  LandingPage() : super(child: () => _LandingPageState());
+  LandingPage({super.key}) : super(child: () => _LandingPageState());
 }
 
 class _LandingPageState extends NyState<LandingPage> {
@@ -63,11 +63,11 @@ class _LandingPageState extends NyState<LandingPage> {
 
                       ClipRect(
                         child: BackdropFilter(
-                          filter: new ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+                          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
                           child: Container(
                             padding: EdgeInsets.symmetric(horizontal: 16, vertical: 30),
-                            decoration: new BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withAlpha((255.0 * 0.1).round()),
                               borderRadius: BorderRadius.circular(32),
                             ),
                             child: Column(
@@ -110,13 +110,13 @@ class ImageCarousel extends StatefulWidget {
   final List<String> images;
   final Duration duration;
 
-  ImageCarousel({
+  const ImageCarousel({super.key, 
     required this.images,
     this.duration = const Duration(seconds: 5),
   });
 
   @override
-  _ImageCarouselState createState() => _ImageCarouselState();
+  createState() => _ImageCarouselState();
 }
 
 class _ImageCarouselState extends State<ImageCarousel> {
@@ -183,5 +183,4 @@ class _ImageCarouselState extends State<ImageCarousel> {
     );
   }
 }
-
 ''';

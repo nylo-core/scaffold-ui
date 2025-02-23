@@ -1,9 +1,8 @@
 String stubSupabaseRegisterController() => '''
 import 'package:supabase_flutter/supabase_flutter.dart' as sb;
-
-import 'controller.dart';
-import 'package:flutter/widgets.dart';
 import 'package:nylo_framework/nylo_framework.dart';
+import 'package:flutter/widgets.dart';
+import 'controller.dart';
 
 class RegisterController extends Controller {
 

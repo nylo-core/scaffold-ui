@@ -1,15 +1,15 @@
 String stubLoginPage() => '''
+import 'package:flutter/material.dart';
+import 'package:nylo_framework/nylo_framework.dart';
 import '/resources/pages/forgot_password_page.dart';
 import '/app/controllers/login_controller.dart';
 import '/resources/widgets/logo_widget.dart';
 import '/resources/widgets/buttons/buttons.dart';
-import 'package:flutter/material.dart';
-import 'package:nylo_framework/nylo_framework.dart';
 
 class LoginPage extends NyStatefulWidget<LoginController> {
   static RouteView path = ("/login", (_) => LoginPage());
 
-  LoginPage() : super(child: () => _LoginPageState()); 
+  LoginPage({super.key}) : super(child: () => _LoginPageState()); 
 }
 
 class _LoginPageState extends NyState<LoginPage> {

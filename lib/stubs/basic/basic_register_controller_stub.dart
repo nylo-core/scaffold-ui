@@ -1,6 +1,6 @@
 String stubBasicRegisterController() => '''
-import 'controller.dart';
 import 'package:nylo_framework/nylo_framework.dart';
+import 'controller.dart';
 
 class RegisterController extends Controller {
 
