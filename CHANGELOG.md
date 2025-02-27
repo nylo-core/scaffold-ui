@@ -1,3 +1,7 @@
+## [1.2.3] - 2025-02-27
+
+* Dependency updates
+
 ## [1.2.2] - 2025-02-23
 
 * Update stubs as per analysis
