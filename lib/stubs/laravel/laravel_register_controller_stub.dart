@@ -9,16 +9,23 @@ class RegisterController extends Controller {
 
   /// Register the user
   register(String name, String email, String password) async {
-    LaravelAuthResponse? laravelAuthResponse = await api<LaravelAuthApiService>((request) => request.register(
-        name: name, 
-        email: email, 
-        password: password
-    ), context: context);
-      if (laravelAuthResponse?.status != 200) {
-        showToastOops(description: laravelAuthResponse?.message ?? "");
-        return;
+    LaravelAuthResponse? laravelAuthResponse = await api<LaravelAuthApiService>(
+        (request) =>
+            request.register(name: name, email: email, password: password),
+        context: context, onSuccess: (Response response, dynamic data) {
+      data as LaravelAuthResponse;
+      if (data.status != 200) {
+        showToastOops(description: data.message ?? "");
+        return null;
       }
-      await event<LaravelAuthEvent>(data: {"user": laravelAuthResponse});
+      return data;
+    });
+
+    if (laravelAuthResponse == null) {
+      return;
+    }
+     
+    await event<LaravelAuthEvent>(data: {"user": laravelAuthResponse});
   }
 }
 ''';

@@ -9,12 +9,22 @@ class LoginController extends Controller {
 
   /// Login the user
   login(String email, String password) async {
-    LaravelAuthResponse? laravelAuthResponse = await api<LaravelAuthApiService>((request) => request.login(email, password), context: context);
-      if (laravelAuthResponse?.status != 200) {
-        showToastOops(description: laravelAuthResponse?.message ?? "");
-        return;
+    LaravelAuthResponse? laravelAuthResponse = await api<LaravelAuthApiService>(
+        (request) => request.login(email, password),
+        context: context, onSuccess: (Response response, dynamic data) {
+      data as LaravelAuthResponse;
+      if (data.status != 200) {
+        showToastOops(description: data.message ?? "");
+        return null;
       }
-      event<LaravelAuthEvent>(data: {"user": laravelAuthResponse});
+      return data;
+    });
+
+    if (laravelAuthResponse == null) {
+      return;
+    }
+    
+    await event<LaravelAuthEvent>(data: {"user": laravelAuthResponse});
   }
 }
 ''';

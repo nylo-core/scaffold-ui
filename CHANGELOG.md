@@ -1,3 +1,8 @@
+## [1.2.4] - 2025-03-09
+
+* Update Laravel controller stubs
+* Dependency updates
+
 ## [1.2.3] - 2025-02-27
 
 * Dependency updates
