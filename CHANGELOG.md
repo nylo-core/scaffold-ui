@@ -1,3 +1,8 @@
+## [1.2.5] - 2025-03-21
+
+* Small fix for login_page stub
+* Dependency updates
+
 ## [1.2.4] - 2025-03-09
 
 * Update Laravel controller stubs

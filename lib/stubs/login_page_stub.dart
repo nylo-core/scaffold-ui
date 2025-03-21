@@ -14,7 +14,9 @@ class LoginPage extends NyStatefulWidget<LoginController> {
 
 class _LoginPageState extends NyState<LoginPage> {
 
-  NyLoginForm form = NyLoginForm();
+  NyLoginForm form = NyLoginForm(
+                        emailValidationRule: "email", 
+                        passwordValidationRule: "not_empty");
 
   @override
   Widget view(BuildContext context) {
@@ -34,6 +36,7 @@ class _LoginPageState extends NyState<LoginPage> {
             Spacing.vertical(15),
 
             Button.primary(text: "Login", submitForm: (form, (data) async {
+              if (!(data is Map)) return;
               await widget.controller.login(data['email'], data['password']);
             }), color: Colors.black87),
 
