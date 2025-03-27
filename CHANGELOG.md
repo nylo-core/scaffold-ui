@@ -1,3 +1,7 @@
+## [1.2.6] - 2025-03-27
+
+* Dependency updates
+
 ## [1.2.5] - 2025-03-21
 
 * Small fix for login_page stub
