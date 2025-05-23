@@ -1,6 +1,6 @@
 import 'dart:io';
 import '/cli_dialog/src/stdout_service.dart';
-import 'package:dart_console/dart_console.dart';
+import 'package:nylo_support/dart_console/dart_console.dart';
 import 'keys.dart';
 
 final console = Console();

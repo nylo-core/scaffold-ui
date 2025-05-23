@@ -1,3 +1,7 @@
+## [1.2.8] - 2025-05-23
+
+* Dependency updates
+
 ## [1.2.7] - 2025-04-09
 
 * Dependency updates
