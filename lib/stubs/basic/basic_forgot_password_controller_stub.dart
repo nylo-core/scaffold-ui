@@ -1,4 +1,4 @@
-stubBasicForgotPasswordController() => '''
+String stubBasicForgotPasswordController() => '''
 import 'package:flutter/widgets.dart';
 import 'controller.dart';
 

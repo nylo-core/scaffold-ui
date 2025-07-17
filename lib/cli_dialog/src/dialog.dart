@@ -84,7 +84,7 @@ class CliDialog {
   /// dialog.addQuestion([{'question': 'How are you?', options: ['Good', 'Not so good']}, 'mood'], isList: true);
   /// ```
   void addQuestion(pQuestion, key,
-      {isBoolean = false, isList = false, isMessage = false}) {
+      {bool isBoolean = false, isList = false, isMessage = false}) {
     if ((isBoolean ? 1 : 0) + (isList ? 1 : 0) + (isMessage ? 1 : 0) > 1) {
       throw ArgumentError(
           'A question can not have more than one boolean qualifier.');
@@ -103,7 +103,7 @@ class CliDialog {
 
   /// Same as [addQuestion] but you can add multiple questions (of the same type)
   void addQuestions(pQuestions,
-      {isBoolean = false, isList = false, isMessage = false}) {
+      {bool isBoolean = false, isList = false, isMessage = false}) {
     if (isBoolean) {
       booleanQuestions!.addAll(pQuestions);
     } else if (isList) {

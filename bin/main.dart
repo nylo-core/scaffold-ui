@@ -37,7 +37,7 @@ void main(List<String> arguments) async {
   exit(0);
 }
 
-iap() async {
+Future<void> iap() async {
   final dialogQuestions = CliDialog(listQuestions: [
     [
       {
@@ -112,7 +112,7 @@ iap() async {
   }
 }
 
-auth() async {
+Future<void> auth() async {
   final dialogQuestions = CliDialog(listQuestions: [
     [
       {

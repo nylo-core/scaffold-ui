@@ -1,4 +1,4 @@
-stubBasicLoginController() => '''
+String stubBasicLoginController() => '''
 import 'package:nylo_framework/nylo_framework.dart';
 import 'controller.dart';
 

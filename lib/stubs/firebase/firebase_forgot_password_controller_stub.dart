@@ -1,4 +1,4 @@
-stubFirebaseForgotPasswordController() => '''
+String stubFirebaseForgotPasswordController() => '''
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import 'package:flutter/widgets.dart';

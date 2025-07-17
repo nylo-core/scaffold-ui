@@ -1,4 +1,4 @@
-stubFirebaseLoginController() => '''
+String stubFirebaseLoginController() => '''
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:nylo_framework/nylo_framework.dart';
 import '/app/models/user.dart';
