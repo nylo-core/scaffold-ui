@@ -1,3 +1,11 @@
+## [1.3.1] - 2025-12-13
+
+* Dependency updates
+
+## [1.3.0] - 2025-09-06
+
+* Dependency updates
+
 ## [1.2.9] - 2025-07-17
 
 * Dependency updates
