@@ -8,7 +8,8 @@ class NyLaravelSlateConfig {
 
   /// Get the base URL
   String get url {
-    // remove trailing slash
-    return _url.replaceAll(RegExp(r'/$'), '');
+    // Strip every trailing slash so a user pasting "https://api.example.com//"
+    // doesn't end up with "//app/v1" in the generated stub.
+    return _url.replaceAll(RegExp(r'/+$'), '');
   }
 }

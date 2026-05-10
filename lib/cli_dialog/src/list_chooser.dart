@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
 import 'services.dart';
 import 'xterm.dart';
@@ -118,6 +119,11 @@ class ListChooser {
       //see default ctor. Order is important here
       stdin.lineMode = true;
       stdin.echoMode = true;
+      // dart_console's disableRawMode (used internally by Console.readKey)
+      // sets the Windows console mode to 0 because of a bitwise-AND/OR bug,
+      // and stdin.lineMode/echoMode only OR-in two of the bits we need.
+      // Force the full interactive-input mask back on.
+      _restoreWindowsConsoleInputMode();
     }
   }
 
@@ -152,5 +158,33 @@ class ListChooser {
       final input = _stdInput.readByteSync();
       return input;
     }
+  }
+}
+
+// STD_INPUT_HANDLE = (DWORD)-10 = 0xFFFFFFF6.
+const int _stdInputHandle = 0xFFFFFFF6;
+
+// ENABLE_PROCESSED_INPUT | ENABLE_LINE_INPUT | ENABLE_ECHO_INPUT |
+// ENABLE_EXTENDED_FLAGS | ENABLE_VIRTUAL_TERMINAL_INPUT.
+const int _interactiveInputMode = 0x0001 | 0x0002 | 0x0004 | 0x0080 | 0x0200;
+
+typedef _GetStdHandleNative = IntPtr Function(Uint32);
+typedef _GetStdHandleDart = int Function(int);
+typedef _SetConsoleModeNative = Int32 Function(IntPtr, Uint32);
+typedef _SetConsoleModeDart = int Function(int, int);
+
+void _restoreWindowsConsoleInputMode() {
+  if (!Platform.isWindows) return;
+  try {
+    final kernel32 = DynamicLibrary.open('kernel32.dll');
+    final getStdHandle = kernel32
+        .lookupFunction<_GetStdHandleNative, _GetStdHandleDart>('GetStdHandle');
+    final setConsoleMode =
+        kernel32.lookupFunction<_SetConsoleModeNative, _SetConsoleModeDart>(
+            'SetConsoleMode');
+    setConsoleMode(getStdHandle(_stdInputHandle), _interactiveInputMode);
+  } catch (_) {
+    // Best-effort: if the FFI lookup fails, fall back to whatever
+    // stdin.lineMode/echoMode managed to restore.
   }
 }

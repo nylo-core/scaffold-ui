@@ -44,7 +44,7 @@ dart pub add scaffold_ui
 This will add the following to your pubspec.yaml:
 ```yaml
 dependencies:
-  scaffold_ui: ^1.3.1
+  scaffold_ui: ^1.4.0
 ```
 
 ## Setup Guides

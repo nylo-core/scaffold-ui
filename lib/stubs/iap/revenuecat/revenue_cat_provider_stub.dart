@@ -15,10 +15,10 @@ class RevenueCatProvider implements NyProvider {
 
     PurchasesConfiguration? configuration;
     if (Platform.isIOS) {
-      ${(nyRevenueCatSlate.appleAppId?.isEmpty ?? true) ? "// " : ""}configuration = PurchasesConfiguration("${nyRevenueCatSlate.appleAppId == "" ? "Your RevenueCat IOS API Key" : nyRevenueCatSlate.appleAppId}");
+      ${(nyRevenueCatSlate.appleAppId?.isEmpty ?? true) ? "// " : ""}configuration = PurchasesConfiguration("${(nyRevenueCatSlate.appleAppId?.isEmpty ?? true) ? "Your RevenueCat IOS API Key" : nyRevenueCatSlate.appleAppId}");
     }
     if (Platform.isAndroid) {
-      ${(nyRevenueCatSlate.androidAppId?.isEmpty ?? true) ? "// " : ""}configuration = PurchasesConfiguration("${nyRevenueCatSlate.androidAppId == "" ? "Your RevenueCat Android API Key" : nyRevenueCatSlate.androidAppId}");
+      ${(nyRevenueCatSlate.androidAppId?.isEmpty ?? true) ? "// " : ""}configuration = PurchasesConfiguration("${(nyRevenueCatSlate.androidAppId?.isEmpty ?? true) ? "Your RevenueCat Android API Key" : nyRevenueCatSlate.androidAppId}");
     }
     
     if (configuration == null) {

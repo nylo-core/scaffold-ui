@@ -36,10 +36,10 @@ import '/stubs/laravel/laravel_register_controller_stub.dart';
 import '/stubs/laravel/laravel_login_controller_stub.dart';
 import '/stubs/laravel/laravel_dashboard_stub.dart';
 import '/models/ny_laravel_slate_config.dart';
-import '/stubs/laravel/laravel_auth_response.dart';
-import '/stubs/laravel/laravel_api_service.dart';
+import '/stubs/laravel/laravel_auth_response_stub.dart';
+import '/stubs/laravel/laravel_api_service_stub.dart';
 import '/stubs/laravel/laravel_auth_event_stub.dart';
-import '/stubs/laravel/laravel_auth_api_serivce_stub.dart';
+import '/stubs/laravel/laravel_auth_api_service_stub.dart';
 import 'stubs/laravel/laravel_forgot_password_controller_stub.dart';
 
 /// default

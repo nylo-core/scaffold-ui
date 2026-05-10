@@ -1,6 +1,6 @@
 name: scaffold_ui
 description: "The fastest way to scaffold services in your Nylo project! Auth & IAP integrations for Supabase, Firebase, Laravel, RevenueCat and more."
-version: 1.3.1
+version: 1.4.0
 homepage: https://nylo.dev
 repository: https://github.com/nylo-core/scaffold_ui
 issue_tracker: https://github.com/nylo-core/scaffold_ui/issues

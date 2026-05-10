@@ -76,12 +76,21 @@ class CliDialog {
     _initializeLists();
   }
 
-  /// This method is another way of adding questions after instantiating [CLI_Dialog]
-  /// Pass [is_bool] or [isList] as a named argument to indicate the type of question you are adding (boolean qualifier).
+  /// This method is another way of adding questions after instantiating [CliDialog].
+  /// Pass [isBoolean], [isList], or [isMessage] as a named argument to indicate
+  /// the type of question you are adding.
   ///
   /// ```
-  /// final dialog = CLI_Dialog();
-  /// dialog.addQuestion([{'question': 'How are you?', options: ['Good', 'Not so good']}, 'mood'], isList: true);
+  /// final dialog = CliDialog();
+  /// // Plain text question:
+  /// dialog.addQuestion('What is your name?', 'name');
+  /// // List/multiple-choice question — the first positional arg is the
+  /// // {question, options} map, the second is the answer key:
+  /// dialog.addQuestion(
+  ///   {'question': 'How are you?', 'options': ['Good', 'Not so good']},
+  ///   'mood',
+  ///   isList: true,
+  /// );
   /// ```
   void addQuestion(pQuestion, key,
       {bool isBoolean = false, isList = false, isMessage = false}) {
@@ -190,10 +199,17 @@ class CliDialog {
   }
 
   void _checkQuestions() {
-    for (var element in [messages]) {
-      if (element is List && element.length > 2) {
-        throw ArgumentError(
-            'Each message is either just a string or a list with a string and a key.');
+    if (messages != null) {
+      for (var element in messages!) {
+        final isPlainString = element is String;
+        final isStringKeyedPair = element is List &&
+            element.length == 2 &&
+            element[0] is String &&
+            element[1] is String;
+        if (!isPlainString && !isStringKeyedPair) {
+          throw ArgumentError(
+              'Each message is either just a string or a list with a string and a key.');
+        }
       }
     }
 

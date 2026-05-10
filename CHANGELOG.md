@@ -1,3 +1,31 @@
+## [1.4.0] - 2026-05-10
+
+### Fixed
+
+* **CLI no longer hangs after a list selection on Windows 11** ([#2](https://github.com/nylo-core/scaffold-ui/issues/2)). After picking a backend, the next text prompt could not be submitted because `dart_console`'s raw-mode reset (in nylo_support's bundled `dart_console`) zeroes the Windows console mode. `ListChooser._resetStdin` now restores the full interactive input mask via FFI on Windows.
+* **CLI no longer exits silently after `dart pub add`** ([#3](https://github.com/nylo-core/scaffold-ui/issues/3)). `MetroService.addPackage` wired `stdin.pipe(process.stdin)` to the child, which left the parent's stdin in a consumed state and the next `readLineSync` returning null tore the program down. The CLI now installs packages via a local `_addPackage` helper backed by `Process.start(..., mode: ProcessStartMode.inheritStdio)`, which leaves the parent's stdin untouched.
+* `CliDialog` now actually validates each `messages` entry — the previous check fired only if you passed more than two messages total.
+* `stubRevenueCatProvider` no longer emits `PurchasesConfiguration("null")` when an app ID is null; the placeholder branch now matches the comment-toggle branch and handles both null and empty string.
+* `NyLaravelSlateConfig.url` now strips every trailing slash (`/+$`), not just one, so a URL like `https://api.example.com//` no longer leaks `//app/v1` into the generated stub.
+
+### Added
+
+* New `lib/cli/scaffold_cli.dart` exposing the per-command logic as a testable layer: `SlatePlan`, `parseCommand`, `planAuthSlate`, `planIapSlate`, `iosSetupHintFor`, plus the `supportedAuthBackends` / `supportedIapServices` constants and the prompt strings.
+* Comprehensive test suite — 120 tests covering models, slate runners, stubs, the CLI dialog (validation + mock-mode interactions), the list chooser (arrow-key navigation), the XTerm helpers, and the new CLI command planners.
+
+### Changed
+
+* `bin/main.dart` is now a thin runtime wrapper over the new planner functions.
+* `addQuestion` doc-comment example fixed — now matches the actual two-positional-arg signature with valid Dart Map literal syntax.
+* Renamed three Laravel stub source files for naming consistency (only affects code that imported the files directly via `package:scaffold_ui/stubs/laravel/...`, which is not the documented usage):
+  * `lib/stubs/laravel/laravel_auth_api_serivce_stub.dart` → `laravel_auth_api_service_stub.dart`
+  * `lib/stubs/laravel/laravel_api_service.dart` → `laravel_api_service_stub.dart`
+  * `lib/stubs/laravel/laravel_auth_response.dart` → `laravel_auth_response_stub.dart`
+
+### Chore
+
+* `.gitignore` now covers Flutter-generated artifacts (`.flutter-plugins`, `.flutter-plugins-dependencies`, `example/pubspec.lock`); previously-tracked copies untracked.
+
 ## [1.3.1] - 2025-12-13
 
 * Dependency updates

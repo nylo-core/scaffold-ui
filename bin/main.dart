@@ -1,27 +1,20 @@
 import 'dart:io';
 
-import 'package:scaffold_ui/models/ny_revenuecat_slate_config.dart';
-import 'package:scaffold_ui/scaffold_ui.dart';
-import 'package:scaffold_ui/cli_dialog/src/dialog.dart';
-import 'package:scaffold_ui/models/ny_laravel_slate_config.dart';
-import 'package:scaffold_ui/models/ny_supabase_slate_config.dart';
 import 'package:nylo_support/metro/metro_console.dart';
 import 'package:nylo_support/metro/metro_service.dart';
-import 'package:nylo_support/metro/models/ny_template.dart';
+import 'package:scaffold_ui/cli/scaffold_cli.dart';
+import 'package:scaffold_ui/cli_dialog/src/dialog.dart';
+import 'package:scaffold_ui/models/ny_revenuecat_slate_config.dart';
+
+const String _usageHint =
+    'Authentication Usage: dart run scaffold_ui:main auth\n'
+    'In-app Purchases Usage: dart run scaffold_ui:main iap';
 
 void main(List<String> arguments) async {
-  if (arguments.length != 1) {
-    MetroConsole.writeInRed("Invalid arguments");
-    MetroConsole.writeInRed(
-        "Authentication Usage: dart run scaffold_ui:main auth\nIn-app Purchases Usage: dart run scaffold_ui:main iap");
-    exit(1);
-  }
-
-  String command = arguments[0];
-  if (!["iap", "auth"].contains(command)) {
-    MetroConsole.writeInRed("Invalid command");
-    MetroConsole.writeInRed(
-        "Authentication Usage: dart run scaffold_ui:main auth\nIn-app Purchases Usage: dart run scaffold_ui:main iap");
+  final command = parseCommand(arguments);
+  if (command == null) {
+    MetroConsole.writeInRed('Invalid arguments');
+    MetroConsole.writeInRed(_usageHint);
     exit(1);
   }
 
@@ -32,182 +25,124 @@ void main(List<String> arguments) async {
     case 'iap':
       await iap();
       break;
-    default:
   }
   exit(0);
 }
 
-Future<void> iap() async {
-  final dialogQuestions = CliDialog(listQuestions: [
+Future<void> auth() async {
+  final selection = CliDialog(listQuestions: [
     [
       {
-        'question': 'Which service would you like to use?',
-        'options': [
-          'RevenueCat',
-        ]
+        'question': 'Which backend would you like to use?',
+        'options': List<String>.from(supportedAuthBackends),
       },
-      'iap'
+      'backend',
     ],
   ]).ask();
 
-  String iap = dialogQuestions['iap'];
+  final backend = selection['backend'] as String;
+  final plan = planAuthSlate(backend: backend, prompt: _ask);
+  if (plan == null) return;
 
-  switch (iap) {
-    case 'RevenueCat':
-      MetroConsole.writeInGreen("Installing RevenueCat");
-      // install RevenueCat
-      await MetroService.addPackage("purchases_flutter");
-      await MetroService.addPackage("purchases_ui_flutter");
+  if (plan.packagesToAdd.isNotEmpty) {
+    MetroConsole.writeInGreen('Installing $backend');
+    for (final package in plan.packagesToAdd) {
+      await _addPackage(package);
+    }
+  }
 
-      // ios
-      final dialogRevenueCatAppleKey = CliDialog(questions: [
-        [
-          "What is your Apple RevenueCat API Key? If you don't know, enter 'n'",
-          'apple_revenuecat_api_key'
-        ]
-      ]);
-      String? appleRevenueCatApiKey =
-          dialogRevenueCatAppleKey.ask()['apple_revenuecat_api_key'];
-      if (appleRevenueCatApiKey == 'n') {
-        appleRevenueCatApiKey = "";
-      }
+  if (backend == 'Laravel') {
+    MetroConsole.writeInGreen(
+        'Go to your Laravel project\n\nRun: composer require nylo/laravel-nylo-auth\n\nThen publish the package: php artisan vendor:publish --provider="Nylo\\LaravelNyloAuth\\LaravelNyloAuthServiceProvider"');
+    MetroConsole.writeInGreen(
+        'Make sure you have Laravel Sanctum installed\n Run: php artisan install:api\nYour User model must use the HasApiTokens trait');
+  }
 
-      // android
-      final dialogRevenueCatAndroidKey = CliDialog(questions: [
-        [
-          "What is your Android RevenueCat API Key? If you don't know, enter 'n'",
-          'android_revenuecat_api_key'
-        ]
-      ]);
-      String? androidRevenueCatApiKey =
-          dialogRevenueCatAndroidKey.ask()['android_revenuecat_api_key'];
-      if (androidRevenueCatApiKey == 'n') {
-        androidRevenueCatApiKey = "";
-      }
+  await MetroService.createSlate(plan.templates, hasForceFlag: true);
 
-      // config
-      NyRevenueCatSlateConfig nyRevenueCatSlateConfig = NyRevenueCatSlateConfig(
-        appleAppId: appleRevenueCatApiKey,
-        androidAppId: androidRevenueCatApiKey,
-      );
-
-      String iosSetupInfo = "";
-      if (appleRevenueCatApiKey != "") {
-        iosSetupInfo = "IOS Setup";
-        iosSetupInfo += "\n- Open the `ios/Runner.xcworkspace` file in Xcode";
-        iosSetupInfo += "\n- Navigate to the `Runner` target";
-        iosSetupInfo +=
-            "\n- Under the `Signing & Capabilities` tab, add the `In-App Purchase` capability";
-        iosSetupInfo += "\n- Run \"cd ios && pod repo update\"";
-        iosSetupInfo += "\n\n";
-      }
-
-      List<NyTemplate> templates = revenueCatRun(nyRevenueCatSlateConfig);
-      await MetroService.createSlate(templates, hasForceFlag: true);
+  switch (backend) {
+    case 'Supabase':
       MetroConsole.writeInGreen(
-          "RevenueCat scaffolding complete 🎉\n\nTo view the paywall, use 'routeTo(PaywallPage.path)';\n\n${iosSetupInfo}Learn more: https://revenuecat.com/docs/flutter");
+          'Supabase scaffolding is ready 🎉\nLearn more: https://supabase.io/docs/guides/with-flutter');
       break;
-    default:
+    case 'Laravel':
+      MetroConsole.writeInGreen(
+          'Laravel scaffolding is ready 🎉\nLearn more: https://laravel.com');
+      break;
+    case 'Firebase':
+      const firebaseInfo = 'Setup Firebase'
+          '\n- Create a Firebase project: https://console.firebase.google.com'
+          '\n- Download flutterfire: https://firebase.google.com/docs/flutter/setup'
+          '\n- Run `flutterfire configure`'
+          '\n- Enable Email/Password sign-in method in Firebase Console';
+      MetroConsole.writeInGreen(
+          'Firebase Auth scaffolding has been setup 🎉\n\n$firebaseInfo\n\nLearn more: https://firebase.google.com/docs/auth/flutter/start');
+      break;
+    case 'Basic':
+      MetroConsole.writeInGreen(
+          'Basic Auth scaffolding has been setup 🎉\nLearn more: https://nylo.dev');
       break;
   }
 }
 
-Future<void> auth() async {
-  final dialogQuestions = CliDialog(listQuestions: [
+Future<void> iap() async {
+  final selection = CliDialog(listQuestions: [
     [
       {
-        'question': 'Which backend would you like to use?',
-        'options': [
-          'Supabase',
-          'Laravel',
-          'Firebase',
-          'Basic',
-        ]
+        'question': 'Which service would you like to use?',
+        'options': List<String>.from(supportedIapServices),
       },
-      'backend'
+      'iap',
     ],
   ]).ask();
 
-  String backend = dialogQuestions['backend'];
+  final service = selection['iap'] as String;
+  final plan = planIapSlate(service: service, prompt: _ask);
+  if (plan == null) return;
 
-  switch (backend) {
-    case 'Supabase':
-      MetroConsole.writeInGreen("Installing Supabase");
-      // install supabase
-      await MetroService.addPackage("supabase_flutter");
-
-      final dialogSupabaseUrl = CliDialog(questions: [
-        ['What is your Supabase Url?', 'supabase_url']
-      ]);
-      final String supabaseUrl = dialogSupabaseUrl.ask()['supabase_url'];
-
-      final dialogSupabaseAnonKey = CliDialog(questions: [
-        ['What is your Supabase Anon Key?', 'supabase_anon_key']
-      ]);
-      final String supabaseAnonKey =
-          dialogSupabaseAnonKey.ask()['supabase_anon_key'];
-
-      NySupabaseSlateConfig nySupabaseSlateConfig =
-          NySupabaseSlateConfig(url: supabaseUrl, anonKey: supabaseAnonKey);
-
-      List<NyTemplate> templates = supabaseRun(nySupabaseSlateConfig);
-      await MetroService.createSlate(templates, hasForceFlag: true);
-      MetroConsole.writeInGreen(
-          "Supabase scaffolding is ready 🎉\nLearn more: https://supabase.io/docs/guides/with-flutter");
-      break;
-    case 'Laravel':
-      final dialogSupabaseUrl = CliDialog(questions: [
-        ['What is your Laravel Url?', 'laravel_url']
-      ]);
-      String laravelUrl = dialogSupabaseUrl.ask()['laravel_url'];
-
-      // remove trailing slash if exists
-      if (laravelUrl.endsWith('/')) {
-        laravelUrl = laravelUrl.substring(0, laravelUrl.length - 1);
-      }
-
-      NyLaravelSlateConfig nyLaravelSlateConfig = NyLaravelSlateConfig(
-        url: laravelUrl,
-      );
-
-      MetroConsole.writeInGreen(
-          'Go to your Laravel project\n\nRun: composer require nylo/laravel-nylo-auth\n\nThen publish the package: php artisan vendor:publish --provider="Nylo\\LaravelNyloAuth\\LaravelNyloAuthServiceProvider"');
-      MetroConsole.writeInGreen(
-          'Make sure you have Laravel Sanctum installed\n Run: php artisan install:api\nYour User model must use the HasApiTokens trait');
-      List<NyTemplate> templates = laravelRun(nyLaravelSlateConfig);
-      await MetroService.createSlate(templates, hasForceFlag: true);
-
-      MetroConsole.writeInGreen(
-          "Laravel scaffolding is ready 🎉\nLearn more: https://laravel.com");
-      break;
-    case 'Firebase':
-      MetroConsole.writeInGreen("Installing Firebase");
-      // install firebase
-      await MetroService.addPackage("firebase_core");
-      await MetroService.addPackage("firebase_auth");
-      await MetroService.addPackage("cloud_firestore");
-
-      List<NyTemplate> templates = firebaseRun();
-      await MetroService.createSlate(templates, hasForceFlag: true);
-
-      String firebaseInfo = "Setup Firebase";
-      firebaseInfo +=
-          "\n- Create a Firebase project: https://console.firebase.google.com";
-      firebaseInfo +=
-          "\n- Download flutterfire: https://firebase.google.com/docs/flutter/setup";
-      firebaseInfo += "\n- Run `flutterfire configure`";
-      firebaseInfo +=
-          "\n- Enable Email/Password sign-in method in Firebase Console";
-
-      MetroConsole.writeInGreen(
-          "Firebase Auth scaffolding has been setup 🎉\n\n$firebaseInfo\n\nLearn more: https://firebase.google.com/docs/auth/flutter/start");
-      break;
-    case 'Basic':
-      List<NyTemplate> templates = basicRun();
-      await MetroService.createSlate(templates, hasForceFlag: true);
-      MetroConsole.writeInGreen(
-          "Basic Auth scaffolding has been setup 🎉\nLearn more: https://nylo.dev");
-      break;
-    default:
+  if (plan.packagesToAdd.isNotEmpty) {
+    MetroConsole.writeInGreen('Installing $service');
+    for (final package in plan.packagesToAdd) {
+      await _addPackage(package);
+    }
   }
+
+  await MetroService.createSlate(plan.templates, hasForceFlag: true);
+
+  if (service == 'RevenueCat') {
+    final config = plan.config as NyRevenueCatSlateConfig;
+    final iosHint = iosSetupHintFor(
+      appleKeyProvided: (config.appleAppId ?? '').isNotEmpty,
+    );
+    MetroConsole.writeInGreen(
+        "RevenueCat scaffolding complete 🎉\n\nTo view the paywall, use 'routeTo(PaywallPage.path)';\n\n${iosHint}Learn more: https://revenuecat.com/docs/flutter");
+  }
+}
+
+// `CliDialog.ask()` returns answers keyed by the per-question key. `_ask`
+// always asks exactly one question per dialog, so the key is incidental — we
+// use a single named constant for clarity.
+const String _answerKey = 'answer';
+
+String _ask(String question) {
+  return CliDialog(questions: [
+    [question, _answerKey],
+  ]).ask()[_answerKey];
+}
+
+// Avoids `MetroService.addPackage`: that helper pipes the parent's stdin into
+// the child via `stdin.pipe(process.stdin)`, which leaves stdin consumed and
+// causes the next `readLineSync` in this CLI to return null.
+Future<int> _addPackage(String package) async {
+  final process = await Process.start(
+    'dart',
+    ['pub', 'add', package],
+    runInShell: true,
+    mode: ProcessStartMode.inheritStdio,
+  );
+  final exitCode = await process.exitCode;
+  if (exitCode != 0) {
+    MetroConsole.writeInRed('Error adding package $package: $exitCode');
+  }
+  return exitCode;
 }
