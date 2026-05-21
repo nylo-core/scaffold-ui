@@ -1,7 +1,8 @@
-import 'package:nylo_support/metro/models/ny_template.dart';
+import 'package:nylo_support/metro/ny_metro.dart';
 
 import '/models/ny_laravel_slate_config.dart';
 import '/models/ny_revenuecat_slate_config.dart';
+import '/models/ny_superwall_slate_config.dart';
 import '/models/ny_supabase_slate_config.dart';
 import '/scaffold_ui.dart';
 
@@ -45,7 +46,7 @@ const List<String> supportedAuthBackends = [
 ];
 
 /// Service choices presented to the user for `dart run scaffold_ui:main iap`.
-const List<String> supportedIapServices = ['RevenueCat'];
+const List<String> supportedIapServices = ['RevenueCat', 'Superwall'];
 
 // The exact prompt strings shown to the user. Centralised here so the planners
 // and the tests reference the same constants.
@@ -56,6 +57,10 @@ const String appleRevenueCatKeyPrompt =
     "What is your Apple RevenueCat API Key? If you don't know, enter 'n'";
 const String androidRevenueCatKeyPrompt =
     "What is your Android RevenueCat API Key? If you don't know, enter 'n'";
+const String appleSuperwallKeyPrompt =
+    "What is your Apple Superwall API Key? If you don't know, enter 'n'";
+const String androidSuperwallKeyPrompt =
+    "What is your Android Superwall API Key? If you don't know, enter 'n'";
 
 /// Validates the CLI invocation and returns the parsed command name (`auth`
 /// or `iap`). Returns `null` for any other shape — the caller is responsible
@@ -72,10 +77,7 @@ String? parseCommand(List<String> args) {
 ///
 /// Returns `null` for an unsupported backend so the runtime can fall through
 /// to its default branch.
-SlatePlan? planAuthSlate({
-  required String backend,
-  required Prompt prompt,
-}) {
+SlatePlan? planAuthSlate({required String backend, required Prompt prompt}) {
   switch (backend) {
     case 'Supabase':
       final url = prompt(supabaseUrlPrompt);
@@ -104,23 +106,17 @@ SlatePlan? planAuthSlate({
         templates: firebaseRun(),
       );
     case 'Basic':
-      return SlatePlan(
-        packagesToAdd: const [],
-        templates: basicRun(),
-      );
+      return SlatePlan(packagesToAdd: const [], templates: basicRun());
     default:
       return null;
   }
 }
 
 /// Builds the slate plan for an `iap` invocation. Mirrors [planAuthSlate] in
-/// shape; for RevenueCat the user can type `n` to skip a platform key, which
-/// is normalised to the empty string (the stub treats `''` as "leave the
-/// configure line commented out with placeholder text").
-SlatePlan? planIapSlate({
-  required String service,
-  required Prompt prompt,
-}) {
+/// shape; for RevenueCat and Superwall the user can type `n` to skip a
+/// platform key, which is normalised to the empty string (the stub treats
+/// `''` as "leave the configure line commented out with placeholder text").
+SlatePlan? planIapSlate({required String service, required Prompt prompt}) {
   switch (service) {
     case 'RevenueCat':
       var apple = prompt(appleRevenueCatKeyPrompt);
@@ -134,6 +130,20 @@ SlatePlan? planIapSlate({
       return SlatePlan(
         packagesToAdd: const ['purchases_flutter', 'purchases_ui_flutter'],
         templates: revenueCatRun(config),
+        config: config,
+      );
+    case 'Superwall':
+      var apple = prompt(appleSuperwallKeyPrompt);
+      if (apple == 'n') apple = '';
+      var android = prompt(androidSuperwallKeyPrompt);
+      if (android == 'n') android = '';
+      final config = NySuperwallSlateConfig(
+        appleApiKey: apple,
+        androidApiKey: android,
+      );
+      return SlatePlan(
+        packagesToAdd: const ['superwallkit_flutter'],
+        templates: superwallRun(config),
         config: config,
       );
     default:
@@ -153,4 +163,108 @@ String iosSetupHintFor({required bool appleKeyProvided}) {
       '\n- Under the `Signing & Capabilities` tab, add the `In-App Purchase` capability'
       '\n- Run "cd ios && pod repo update"'
       '\n\n';
+}
+
+/// Superwall-specific iOS hint. Mirrors [iosSetupHintFor] but adds the
+/// iOS 14.0+ deployment-target requirement (Superwall's documented minimum).
+/// Empty when no Apple key was provided so Android-only projects don't see
+/// noisy iOS guidance.
+String superwallIosSetupHintFor({required bool appleKeyProvided}) {
+  if (!appleKeyProvided) return '';
+  return 'IOS Setup'
+      '\n- Ensure your iOS deployment target is 14.0 or higher (set `platform :ios, \'14.0\'` in `ios/Podfile`)'
+      '\n- Open the `ios/Runner.xcworkspace` file in Xcode'
+      '\n- Navigate to the `Runner` target'
+      '\n- Under the `Signing & Capabilities` tab, add the `In-App Purchase` capability'
+      '\n- Run "cd ios && pod repo update"'
+      '\n\n';
+}
+
+/// Superwall-specific Android hint. The runtime auto-injects the
+/// `SuperwallPaywallActivity` per Superwall's install docs, so the only thing
+/// the consumer must do manually is raise `minSdkVersion` to 26 — Flutter's
+/// historical default of 21 fails the build.
+///
+/// Empty when no Android key was provided so iOS-only projects don't see
+/// noisy Android guidance.
+String superwallAndroidSetupHintFor({required bool androidKeyProvided}) {
+  if (!androidKeyProvided) return '';
+  return 'Android Setup'
+      '\n- Set `minSdkVersion 26` (or higher) in `android/app/build.gradle` — Superwall requires it'
+      '\n\n';
+}
+
+/// The `<activity>` element Superwall's install docs ask developers to
+/// register inside `<application>` in
+/// `android/app/src/main/AndroidManifest.xml`. The plugin's bundled manifest
+/// declares it too, but with `Theme.AppCompat.NoActionBar`; injecting this
+/// here lets the consumer's app override that with the docs-recommended
+/// `Theme.MaterialComponents.DayNight.NoActionBar` (main-app manifest wins on
+/// attribute conflicts via Gradle manifest-merger priority).
+const String superwallAndroidActivityXml =
+    '<activity\n'
+    '            android:name="com.superwall.sdk.paywall.view.SuperwallPaywallActivity"\n'
+    '            android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"\n'
+    '            android:configChanges="orientation|screenSize|keyboardHidden" />';
+
+/// Outcome of trying to inject the Superwall activity into a manifest.
+enum AndroidManifestPatchResult {
+  /// Activity was inserted; [PatchedManifest.content] is the new XML.
+  added,
+
+  /// Activity is already present; the manifest was left untouched.
+  alreadyRegistered,
+
+  /// The manifest didn't have an `<application>` opening tag we could find,
+  /// so we left it untouched and the caller should print a manual hint.
+  malformedManifest,
+}
+
+/// The result of [patchAndroidManifestForSuperwall]: the (possibly unchanged)
+/// XML and a tag describing what happened, so the runtime can decide whether
+/// to write the file back and what to print to the user.
+class PatchedManifest {
+  final String content;
+  final AndroidManifestPatchResult result;
+  const PatchedManifest(this.content, this.result);
+}
+
+/// Idempotently inserts [superwallAndroidActivityXml] just after the opening
+/// `<application ...>` tag in [manifestContent]. Pure — does no IO so it can
+/// be unit-tested against canned manifest strings.
+PatchedManifest patchAndroidManifestForSuperwall(String manifestContent) {
+  // Idempotency: any existing reference to the SuperwallPaywallActivity means
+  // we've already patched (or the developer pasted it manually). Bail.
+  if (manifestContent.contains('SuperwallPaywallActivity')) {
+    return PatchedManifest(
+      manifestContent,
+      AndroidManifestPatchResult.alreadyRegistered,
+    );
+  }
+
+  final appTagStart = manifestContent.indexOf('<application');
+  if (appTagStart == -1) {
+    return PatchedManifest(
+      manifestContent,
+      AndroidManifestPatchResult.malformedManifest,
+    );
+  }
+  // Find the closing `>` of the `<application ...>` opening tag. A real
+  // Flutter manifest always has children inside it, so we don't special-case
+  // a self-closing `<application .../>`.
+  final appTagEnd = manifestContent.indexOf('>', appTagStart);
+  if (appTagEnd == -1) {
+    return PatchedManifest(
+      manifestContent,
+      AndroidManifestPatchResult.malformedManifest,
+    );
+  }
+
+  final insertion = '\n        $superwallAndroidActivityXml';
+  final patched =
+      manifestContent.substring(0, appTagEnd + 1) +
+      insertion +
+      manifestContent.substring(appTagEnd + 1);
+
+  return PatchedManifest(patched, AndroidManifestPatchResult.added);
 }

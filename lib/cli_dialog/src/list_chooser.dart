@@ -28,8 +28,12 @@ class ListChooser {
 
   /// Named constructor mostly for unit testing.
   /// For context and an example see [CLI_Dialog], `README.md` and the `test/` folder.
-  ListChooser.std(this._stdInput, this._stdOutput, this.items,
-      {this.navigationMode = false}) {
+  ListChooser.std(
+    this._stdInput,
+    this._stdOutput,
+    this.items, {
+    this.navigationMode = false,
+  }) {
     _checkItems();
     if (stdin.hasTerminal) {
       stdin.echoMode = false;
@@ -81,8 +85,9 @@ class ListChooser {
       if (input == 58) {
         // 58 = :
         _stdOutput.write(':');
-        final inputLine =
-            _stdInput.readLineSync(encoding: Encoding.getByName('utf-8'))!;
+        final inputLine = _stdInput.readLineSync(
+          encoding: Encoding.getByName('utf-8'),
+        )!;
         final lineNumber = int.parse(inputLine.trim());
         _stdOutput.writeln('$lineNumber');
         return -lineNumber; // make the result negative so it can be told apart from normal key codes
@@ -106,8 +111,9 @@ class ListChooser {
     }
     for (var i = 0; i < items!.length; i++) {
       if (i == index) {
-        _stdOutput
-            .writeln('${XTerm.rightIndicator()} ${XTerm.teal(items![i])}');
+        _stdOutput.writeln(
+          '${XTerm.rightIndicator()} ${XTerm.teal(items![i])}',
+        );
         continue;
       }
       _stdOutput.writeln('  ${items![i]}');
@@ -179,9 +185,10 @@ void _restoreWindowsConsoleInputMode() {
     final kernel32 = DynamicLibrary.open('kernel32.dll');
     final getStdHandle = kernel32
         .lookupFunction<_GetStdHandleNative, _GetStdHandleDart>('GetStdHandle');
-    final setConsoleMode =
-        kernel32.lookupFunction<_SetConsoleModeNative, _SetConsoleModeDart>(
-            'SetConsoleMode');
+    final setConsoleMode = kernel32
+        .lookupFunction<_SetConsoleModeNative, _SetConsoleModeDart>(
+          'SetConsoleMode',
+        );
     setConsoleMode(getStdHandle(_stdInputHandle), _interactiveInputMode);
   } catch (_) {
     // Best-effort: if the FFI lookup fails, fall back to whatever

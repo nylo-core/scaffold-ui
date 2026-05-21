@@ -2,9 +2,7 @@
 class NyLaravelSlateConfig {
   final String _url;
 
-  NyLaravelSlateConfig({
-    required String url,
-  }) : _url = url;
+  NyLaravelSlateConfig({required String url}) : _url = url;
 
   /// Get the base URL
   String get url {

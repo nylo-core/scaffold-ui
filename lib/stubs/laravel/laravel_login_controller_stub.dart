@@ -11,7 +11,7 @@ class LoginController extends Controller {
   login(String email, String password) async {
     LaravelAuthResponse? laravelAuthResponse = await api<LaravelAuthApiService>(
         (request) => request.login(email, password),
-        context: context, onSuccess: (Response response, dynamic data) {
+        onSuccess: (Response response, dynamic data) {
       data as LaravelAuthResponse;
       if (data.status != 200) {
         showToastOops(description: data.message ?? "");

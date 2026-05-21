@@ -14,7 +14,7 @@ class DashboardPage extends NyStatefulWidget {
   DashboardPage({super.key}) : super(child: () => _DashboardPageState());
 }
 
-class _DashboardPageState extends NyState<DashboardPage> {
+class _DashboardPageState extends NyPage<DashboardPage> {
 
   User? _user;
 
@@ -53,9 +53,7 @@ class _DashboardPageState extends NyState<DashboardPage> {
                           horizontal: 16, vertical: 16),
                       padding: EdgeInsets.all(15),
                       decoration: BoxDecoration(
-                          color: ThemeColor
-                              .get(context)
-                              .background,
+                          color: ThemeColorResolver.get(context).general.background,
                           borderRadius: BorderRadius.circular(8),
                           boxShadow: [
                             BoxShadow(

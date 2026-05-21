@@ -113,14 +113,17 @@ class StdoutService {
 
     if (sequence == '[0K') {
       //blank remaning
-      _output[_cursor['y']!] =
-          _output[_cursor['y']!].substring(0, _cursor['x']);
+      _output[_cursor['y']!] = _output[_cursor['y']!].substring(
+        0,
+        _cursor['x'],
+      );
       return true;
     }
     if (RegExp(r'\[\dA').hasMatch(sequence)) {
       _cursor['x'] = 0;
-      var stepsUp =
-          int.parse(RegExp(r'\[\dA').firstMatch(sequence)!.group(0)![1]);
+      var stepsUp = int.parse(
+        RegExp(r'\[\dA').firstMatch(sequence)!.group(0)![1],
+      );
       if (_cursor['y']! - stepsUp >= 0) {
         _cursor['y'] = _cursor['y']! - stepsUp;
       }

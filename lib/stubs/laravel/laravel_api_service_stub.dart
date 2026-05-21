@@ -1,38 +1,45 @@
 import 'package:scaffold_ui/models/ny_laravel_slate_config.dart';
 
-String stubLaravelApiService(NyLaravelSlateConfig nyLaravelSlateConfig) => '''
-import 'package:flutter/material.dart';
+String stubLaravelApiService(NyLaravelSlateConfig nyLaravelSlateConfig) =>
+    '''
 import 'package:nylo_framework/nylo_framework.dart';
-import '/config/decoders.dart';
-import '/app/models/laravel_auth_response.dart';
+import '/bootstrap/decoders.dart';
 import '/app/models/user.dart';
 
 /* LaravelApiService
 | -------------------------------------------------------------------------
 | API Service for your authenticated users
-| Learn more https://nylo.dev/docs/6.x/networking
+| Learn more https://nylo.dev/docs/7.x/networking
 |-------------------------------------------------------------------------- */
 
 class LaravelApiService extends NyApiService {
-  LaravelApiService({BuildContext? buildContext}) : super(buildContext, decoders: modelDecoders);
+  LaravelApiService()
+      : super(
+          decoders: modelDecoders,
+        );
 
   @override
   String get baseUrl => '${nyLaravelSlateConfig.url}/app/v1';
 
-  String get bearerToken {
-    Map<String, dynamic> data = authData();
-    if (!data.containsKey('token')) {
-      throw Exception("Bearer token not set");
-    }
-    return data['token'];
-  }
-
-  /// Fetch auth users information
+  /// Fetch the authenticated user's information
   Future<User?> user() async {
     return await network<User>(
-        request: (request) => request.get("/user"),
-        bearerToken: bearerToken
+      request: (request) => request.get("/user"),
     );
+  }
+
+  /* Authentication Headers
+  |--------------------------------------------------------------------------
+  | Attach the bearer token (stored via Auth.authenticate) to every request.
+  |-------------------------------------------------------------------------- */
+
+  @override
+  Future<RequestHeaders> setAuthHeaders(RequestHeaders headers) async {
+    final String? token = Auth.data(field: 'token');
+    if (token != null) {
+      headers.addBearerToken(token);
+    }
+    return headers;
   }
 }
 ''';

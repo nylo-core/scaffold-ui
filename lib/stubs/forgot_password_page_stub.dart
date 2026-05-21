@@ -11,7 +11,7 @@ class ForgotPasswordPage extends NyStatefulWidget<ForgotPasswordController> {
   ForgotPasswordPage({super.key}) : super(child: () => _ForgotPasswordPageState());
 }
 
-class _ForgotPasswordPageState extends NyState<ForgotPasswordPage> {
+class _ForgotPasswordPageState extends NyPage<ForgotPasswordPage> {
 
   @override
   Widget view(BuildContext context) {
@@ -33,20 +33,17 @@ class _ForgotPasswordPageState extends NyState<ForgotPasswordPage> {
               Text("Enter your email address below and we'll send you a link to reset your password.".tr()).paddingOnly(bottom: 15),
               Divider(),
               Column(children: [
-                NyTextField(
+                InputField.emailAddress(
                   controller: widget.controller.textEmailForgotPassword,
                   labelText: "Email",
-                  enableSuggestions: false,
                   autoFocus: true,
-                  keyboardType: TextInputType.emailAddress,
-                  obscureText: false,
-                  validationRules: "email",
+                  formValidator: FormValidator.email(),
                   validateOnFocusChange: true,
                 ),
 
                 Spacing.vertical(15),
 
-                Button.primary(text: "Forgot Password".tr(), onPressed: widget.controller.forgotPassword, color: Colors.black87),
+                Button.primary(text: "Forgot Password".tr(), onPressed: widget.controller.forgotPassword),
               ])
             ],
           ),

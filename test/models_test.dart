@@ -74,14 +74,16 @@ void main() {
       expect(config.androidAppId, isNull);
     });
 
-    test('accepts empty strings (the CLI normalises "n" -> "" before saving)',
-        () {
-      final config = NyRevenueCatSlateConfig(
-        appleAppId: '',
-        androidAppId: '',
-      );
-      expect(config.appleAppId, '');
-      expect(config.androidAppId, '');
-    });
+    test(
+      'accepts empty strings (the CLI normalises "n" -> "" before saving)',
+      () {
+        final config = NyRevenueCatSlateConfig(
+          appleAppId: '',
+          androidAppId: '',
+        );
+        expect(config.appleAppId, '');
+        expect(config.androidAppId, '');
+      },
+    );
   });
 }

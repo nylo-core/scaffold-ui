@@ -14,10 +14,7 @@ void main() {
     test('rejects null items at construction', () {
       final out = StdoutService(mock: true);
       final input = StdinService(mock: true, informStdout: out, isTest: true);
-      expect(
-        () => ListChooser.std(input, out, null),
-        throwsArgumentError,
-      );
+      expect(() => ListChooser.std(input, out, null), throwsArgumentError);
     });
 
     test('Enter at the top picks the first item', () {
@@ -39,12 +36,7 @@ void main() {
     test('multiple arrowDowns walk the list and stop at the last item', () {
       final chooser = _chooser(
         ['Supabase', 'Laravel', 'Firebase', 'Basic'],
-        [
-          ...Keys.arrowDown,
-          ...Keys.arrowDown,
-          ...Keys.arrowDown,
-          Keys.enter,
-        ],
+        [...Keys.arrowDown, ...Keys.arrowDown, ...Keys.arrowDown, Keys.enter],
       );
       expect(chooser.choose(), 'Basic');
     });
@@ -76,12 +68,7 @@ void main() {
     test('down twice then up once lands on the middle item', () {
       final chooser = _chooser(
         ['a', 'b', 'c', 'd'],
-        [
-          ...Keys.arrowDown,
-          ...Keys.arrowDown,
-          ...Keys.arrowUp,
-          Keys.enter,
-        ],
+        [...Keys.arrowDown, ...Keys.arrowDown, ...Keys.arrowUp, Keys.enter],
       );
       expect(chooser.choose(), 'b');
     });

@@ -1,6 +1,6 @@
 name: scaffold_ui
-description: "The fastest way to scaffold services in your Nylo project! Auth & IAP integrations for Supabase, Firebase, Laravel, RevenueCat and more."
-version: 1.4.0
+description: "The fastest way to scaffold services in your Nylo project! Auth & IAP integrations for Supabase, Firebase, Laravel, RevenueCat, Superwall and more."
+version: 2.0.0
 homepage: https://nylo.dev
 repository: https://github.com/nylo-core/scaffold_ui
 issue_tracker: https://github.com/nylo-core/scaffold_ui/issues
@@ -8,19 +8,19 @@ documentation: https://github.com/nylo-core/scaffold_ui
 funding:
   - https://github.com/sponsors/agordn52
 topics:
-  - scaffold-ui
   - laravel
   - supabase
   - revenuecat
+  - superwall
   - firebase
 
 environment:
-  sdk: '>=3.1.4 <4.0.0'
+  sdk: ^3.10.7
   flutter: ">=1.17.0"
 
 dependencies:
   args: ^2.7.0
-  nylo_support: ^6.38.1
+  nylo_support: ^7.26.0
   flutter:
     sdk: flutter
 
@@ -34,6 +34,7 @@ screenshots:
     path: screenshots/logo.png
 
 flutter:
+  uses-material-design: true
   assets:
     - images/sonoran_desert_1.jpg
     - images/sonoran_desert_2.png

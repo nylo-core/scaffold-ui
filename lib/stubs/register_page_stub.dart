@@ -1,5 +1,4 @@
 String stubRegisterPage() => '''
-import 'package:flutter/gestures.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:nylo_framework/nylo_framework.dart';
@@ -14,9 +13,7 @@ class RegisterPage extends NyStatefulWidget<RegisterController> {
   RegisterPage({super.key}) : super(child: () => _RegisterPageState());
 }
 
-class _RegisterPageState extends NyState<RegisterPage> {
-
-  RegisterForm form = RegisterForm();
+class _RegisterPageState extends NyPage<RegisterPage> {
 
   @override
   Widget view(BuildContext context) {
@@ -31,43 +28,26 @@ class _RegisterPageState extends NyState<RegisterPage> {
         child: ListView(
           children: [
             Text("Register".tr()).headingSmall(fontWeight: FontWeight.bold).paddingOnly(bottom: 25),
-            NyForm(form: form, crossAxisSpacing: 15),
+            RegisterForm(
+              submitButton: Button.primary(text: "Register"),
+              onSubmit: (data) async {
+                await widget.controller.register(data['name'], data['email'], data['password']);
+              },
+            ),
 
             Spacing.vertical(15),
-            
-            Button.primary(text: "Register", submitForm: (form, (data) async {
-              await widget.controller.register(data['name'], data['email'], data['password']);
-            }), color: Colors.black87),
 
-            Spacing.vertical(15),
-
-            RichText(
+            StyledText.template(
+              'By tapping "Register", you agree to our {{terms:terms and conditions}}. You can also view our {{privacy:privacy policy}} here.',
               textAlign: TextAlign.center,
-              text: TextSpan(
-                style: TextStyle(
-                  fontSize: 14.0,
-                  color: Colors.black54,
-                ),
-                children: <TextSpan>[
-                  TextSpan(
-                    text: 'By tapping "Register", you agree to our ',
-                  ),
-                  TextSpan(
-                    text: 'terms and conditions',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => launchUrl(termsUrl()),
-                  ),
-                  TextSpan(text: '. You can also view our '),
-                  TextSpan(
-                    text: 'privacy policy',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                    recognizer: TapGestureRecognizer()
-                      ..onTap = () => launchUrl(privacyUrl()),
-                  ),
-                  TextSpan(text: ' here.'),
-                ],
-              ),
+              style: TextStyle(fontSize: 14.0, color: Colors.black54),
+              styles: {
+                'terms|privacy': TextStyle(fontWeight: FontWeight.bold),
+              },
+              onTap: {
+                'terms': () => launchUrl(termsUrl()),
+                'privacy': () => launchUrl(privacyUrl()),
+              },
             ),
           ],
         ),

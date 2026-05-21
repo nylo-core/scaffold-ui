@@ -1,10 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:scaffold_ui/models/ny_laravel_slate_config.dart';
 import 'package:scaffold_ui/models/ny_revenuecat_slate_config.dart';
+import 'package:scaffold_ui/models/ny_superwall_slate_config.dart';
 import 'package:scaffold_ui/models/ny_supabase_slate_config.dart';
 import 'package:scaffold_ui/stubs/iap/revenuecat/revenue_cat_provider_stub.dart';
+import 'package:scaffold_ui/stubs/iap/superwall/superwall_provider_stub.dart';
 import 'package:scaffold_ui/stubs/laravel/laravel_api_service_stub.dart';
 import 'package:scaffold_ui/stubs/laravel/laravel_auth_api_service_stub.dart';
+import 'package:scaffold_ui/stubs/supabase/supabase_dashboard_stub.dart';
 import 'package:scaffold_ui/stubs/supabase/supabase_provider_stub.dart';
 
 void main() {
@@ -24,8 +27,10 @@ void main() {
       final stub = stubSupabaseProvider(
         NySupabaseSlateConfig(url: 'u', anonKey: 'k'),
       );
-      expect(stub,
-          contains("import 'package:nylo_framework/nylo_framework.dart';"));
+      expect(
+        stub,
+        contains("import 'package:nylo_framework/nylo_framework.dart';"),
+      );
       expect(stub, contains('class SupabaseProvider implements NyProvider'));
     });
 
@@ -35,6 +40,32 @@ void main() {
       );
       expect(stub, contains('supabase.auth.onAuthStateChange.listen'));
       expect(stub, contains('AuthChangeEvent.signedIn'));
+    });
+  });
+
+  group('stubSupabaseDashboard', () {
+    test('does not import the app User model', () {
+      final stub = stubSupabaseDashboard();
+      // Importing '/app/models/user.dart' alongside supabase_flutter pulls
+      // two `User` declarations into scope and makes the generated page
+      // fail to compile with an ambiguous-import error. The dashboard never
+      // uses the app model — `_user` returns the Supabase auth user.
+      expect(
+        stub.contains("import '/app/models/user.dart';"),
+        isFalse,
+        reason:
+            'the app User model collides with the User type re-exported '
+            'by supabase_flutter',
+      );
+    });
+
+    test('resolves the User type through supabase_flutter', () {
+      final stub = stubSupabaseDashboard();
+      expect(
+        stub,
+        contains("import 'package:supabase_flutter/supabase_flutter.dart';"),
+      );
+      expect(stub, contains('User? get _user'));
     });
   });
 
@@ -48,12 +79,14 @@ void main() {
       expect(stub.contains('//app/v1'), isFalse);
     });
 
-    test('extends NyApiService and exposes a bearerToken getter', () {
+    test('extends NyApiService and injects the bearer token via '
+        'setAuthHeaders', () {
       final stub = stubLaravelApiService(
         NyLaravelSlateConfig(url: 'http://localhost:8000'),
       );
       expect(stub, contains('class LaravelApiService extends NyApiService'));
-      expect(stub, contains('String get bearerToken'));
+      expect(stub, contains('setAuthHeaders(RequestHeaders headers)'));
+      expect(stub, contains('headers.addBearerToken(token)'));
     });
   });
 
@@ -88,24 +121,27 @@ void main() {
       expect(
         stub,
         contains(
-            '// configuration = PurchasesConfiguration("Your RevenueCat IOS API Key")'),
-      );
-    });
-
-    test('comments out the Android configure line when androidAppId is empty',
-        () {
-      final stub = stubRevenueCatProvider(
-        NyRevenueCatSlateConfig(appleAppId: 'a', androidAppId: ''),
-      );
-      expect(
-        stub,
-        contains(
-            '// configuration = PurchasesConfiguration("Your RevenueCat Android API Key")'),
+          '// configuration = PurchasesConfiguration("Your RevenueCat IOS API Key")',
+        ),
       );
     });
 
     test(
-        'comments out and uses placeholder text on both lines when both IDs '
+      'comments out the Android configure line when androidAppId is empty',
+      () {
+        final stub = stubRevenueCatProvider(
+          NyRevenueCatSlateConfig(appleAppId: 'a', androidAppId: ''),
+        );
+        expect(
+          stub,
+          contains(
+            '// configuration = PurchasesConfiguration("Your RevenueCat Android API Key")',
+          ),
+        );
+      },
+    );
+
+    test('comments out and uses placeholder text on both lines when both IDs '
         'are null', () {
       final stub = stubRevenueCatProvider(
         NyRevenueCatSlateConfig(appleAppId: null, androidAppId: null),
@@ -117,16 +153,22 @@ void main() {
       expect(
         stub,
         contains(
-            '// configuration = PurchasesConfiguration("Your RevenueCat IOS API Key")'),
+          '// configuration = PurchasesConfiguration("Your RevenueCat IOS API Key")',
+        ),
       );
       expect(
         stub,
         contains(
-            '// configuration = PurchasesConfiguration("Your RevenueCat Android API Key")'),
+          '// configuration = PurchasesConfiguration("Your RevenueCat Android API Key")',
+        ),
       );
-      expect(stub.contains('"null"'), isFalse,
-          reason: 'null appleAppId/androidAppId must not leak as the literal '
-              'string "null" into the generated provider');
+      expect(
+        stub.contains('"null"'),
+        isFalse,
+        reason:
+            'null appleAppId/androidAppId must not leak as the literal '
+            'string "null" into the generated provider',
+      );
     });
 
     test('does NOT comment out the configure line when an ID is provided', () {
@@ -137,12 +179,102 @@ void main() {
         ),
       );
       // Active line — no leading "// " — should appear for both platforms.
-      expect(stub,
-          contains('configuration = PurchasesConfiguration("apple_real_key")'));
       expect(
-          stub,
-          contains(
-              'configuration = PurchasesConfiguration("android_real_key")'));
+        stub,
+        contains('configuration = PurchasesConfiguration("apple_real_key")'),
+      );
+      expect(
+        stub,
+        contains('configuration = PurchasesConfiguration("android_real_key")'),
+      );
+    });
+  });
+
+  group('stubSuperwallProvider', () {
+    test('embeds the apple + android api keys when both are present', () {
+      final stub = stubSuperwallProvider(
+        NySuperwallSlateConfig(
+          appleApiKey: 'apple_real_key',
+          androidApiKey: 'android_real_key',
+        ),
+      );
+      expect(stub, contains('"apple_real_key"'));
+      expect(stub, contains('"android_real_key"'));
+    });
+
+    test('comments out the iOS apiKey line when appleApiKey is empty', () {
+      final stub = stubSuperwallProvider(
+        NySuperwallSlateConfig(appleApiKey: '', androidApiKey: 'a'),
+      );
+      // The conditional is "// " + the assignment line, leaving the
+      // placeholder text intact for the user to fill in later.
+      expect(stub, contains('// apiKey = "Your Superwall IOS API Key"'));
+    });
+
+    test(
+      'comments out the Android apiKey line when androidApiKey is empty',
+      () {
+        final stub = stubSuperwallProvider(
+          NySuperwallSlateConfig(appleApiKey: 'a', androidApiKey: ''),
+        );
+        expect(stub, contains('// apiKey = "Your Superwall Android API Key"'));
+      },
+    );
+
+    test('comments out and uses placeholder text on both lines when both keys '
+        'are null', () {
+      final stub = stubSuperwallProvider(
+        NySuperwallSlateConfig(appleApiKey: null, androidApiKey: null),
+      );
+      expect(stub, contains('// apiKey = "Your Superwall IOS API Key"'));
+      expect(stub, contains('// apiKey = "Your Superwall Android API Key"'));
+      expect(
+        stub.contains('"null"'),
+        isFalse,
+        reason:
+            'null appleApiKey/androidApiKey must not leak as the literal '
+            'string "null" into the generated provider',
+      );
+    });
+
+    test('does NOT comment out the apiKey line when a key is provided', () {
+      final stub = stubSuperwallProvider(
+        NySuperwallSlateConfig(
+          appleApiKey: 'apple_real_key',
+          androidApiKey: 'android_real_key',
+        ),
+      );
+      // Active line — no leading "// " — should appear for both platforms.
+      expect(stub, contains('apiKey = "apple_real_key"'));
+      expect(stub, contains('apiKey = "android_real_key"'));
+    });
+
+    test('produces compilable boilerplate (imports + class declaration)', () {
+      final stub = stubSuperwallProvider(
+        NySuperwallSlateConfig(appleApiKey: 'a', androidApiKey: 'b'),
+      );
+      expect(
+        stub,
+        contains("import 'package:nylo_framework/nylo_framework.dart';"),
+      );
+      expect(
+        stub,
+        contains(
+          "import 'package:superwallkit_flutter/superwallkit_flutter.dart';",
+        ),
+      );
+      expect(stub, contains('class SuperwallProvider implements NyProvider'));
+      expect(stub, contains('Superwall.configure(apiKey, options: options)'));
+    });
+
+    test('includes a user-management usage block (identify + reset)', () {
+      // Discoverability hint inside the generated provider — developers
+      // shouldn't have to read external docs to find these two calls.
+      final stub = stubSuperwallProvider(
+        NySuperwallSlateConfig(appleApiKey: 'a', androidApiKey: 'b'),
+      );
+      expect(stub, contains('Superwall.shared.identify'));
+      expect(stub, contains('Superwall.shared.reset()'));
     });
   });
 }

@@ -35,13 +35,12 @@ void main() {
       expect(XTerm.moveUp(3), '$_esc[3A');
     });
 
-    test('replacePreviousLine combines moveUp(1), the payload and erase-line',
-        () {
-      expect(
-        XTerm.replacePreviousLine('foo'),
-        '$_esc[1Afoo$_esc[0K',
-      );
-    });
+    test(
+      'replacePreviousLine combines moveUp(1), the payload and erase-line',
+      () {
+        expect(XTerm.replacePreviousLine('foo'), '$_esc[1Afoo$_esc[0K');
+      },
+    );
   });
 
   group('XTerm.rightIndicator', () {
@@ -61,14 +60,16 @@ void main() {
   });
 
   group('Keys constants', () {
-    test('arrowDown is a 3-byte escape on Unix or a single byte on Windows',
-        () {
-      if (Platform.isWindows) {
-        expect(Keys.arrowDown.length, 1);
-      } else {
-        expect(Keys.arrowDown, [27, 91, 66]); // ESC [ B
-      }
-    });
+    test(
+      'arrowDown is a 3-byte escape on Unix or a single byte on Windows',
+      () {
+        if (Platform.isWindows) {
+          expect(Keys.arrowDown.length, 1);
+        } else {
+          expect(Keys.arrowDown, [27, 91, 66]); // ESC [ B
+        }
+      },
+    );
 
     test('arrowUp is a 3-byte escape on Unix or a single byte on Windows', () {
       if (Platform.isWindows) {

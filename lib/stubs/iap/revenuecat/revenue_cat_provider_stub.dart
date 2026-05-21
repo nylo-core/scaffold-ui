@@ -1,6 +1,7 @@
 import 'package:scaffold_ui/models/ny_revenuecat_slate_config.dart';
 
-String stubRevenueCatProvider(NyRevenueCatSlateConfig nyRevenueCatSlate) => '''
+String stubRevenueCatProvider(NyRevenueCatSlateConfig nyRevenueCatSlate) =>
+    '''
 import 'package:nylo_framework/nylo_framework.dart';
 import 'dart:io' show Platform;
 
@@ -8,7 +9,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 
 class RevenueCatProvider implements NyProvider {
   @override
-  boot(Nylo nylo) async {
+  setup(Nylo nylo) async {
     if (getEnv('APP_DEBUG', defaultValue: false)) {
       await Purchases.setLogLevel(LogLevel.verbose);
     }
@@ -32,7 +33,7 @@ class RevenueCatProvider implements NyProvider {
   }
 
   @override
-  afterBoot(Nylo nylo) async {
+  boot(Nylo nylo) async {
 
   }
 }

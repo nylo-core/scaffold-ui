@@ -1,14 +1,16 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nylo_support/metro/constants/strings.dart';
-import 'package:nylo_support/metro/models/ny_template.dart';
+import 'package:nylo_support/metro/ny_metro.dart';
 import 'package:scaffold_ui/models/ny_laravel_slate_config.dart';
 import 'package:scaffold_ui/models/ny_revenuecat_slate_config.dart';
+import 'package:scaffold_ui/models/ny_superwall_slate_config.dart';
 import 'package:scaffold_ui/models/ny_supabase_slate_config.dart';
 import 'package:scaffold_ui/scaffold_ui.dart';
 
 NyTemplate _byName(List<NyTemplate> templates, String name) =>
-    templates.firstWhere((t) => t.name == name,
-        orElse: () => throw StateError('No template named $name'));
+    templates.firstWhere(
+      (t) => t.name == name,
+      orElse: () => throw StateError('No template named $name'),
+    );
 
 bool _hasName(List<NyTemplate> templates, String name) =>
     templates.any((t) => t.name == name);
@@ -71,9 +73,13 @@ void main() {
 
     test('saves api services under networking/', () {
       expect(
-          _byName(templates, 'laravel_api_service').saveTo, networkingFolder);
-      expect(_byName(templates, 'laravel_auth_api_service').saveTo,
-          networkingFolder);
+        _byName(templates, 'laravel_api_service').saveTo,
+        networkingFolder,
+      );
+      expect(
+        _byName(templates, 'laravel_auth_api_service').saveTo,
+        networkingFolder,
+      );
     });
 
     test('emits a laravel_auth_event under events/', () {
@@ -87,8 +93,7 @@ void main() {
       );
     });
 
-    test(
-        'strips trailing slash from URL before interpolating into the api '
+    test('strips trailing slash from URL before interpolating into the api '
         'service stub', () {
       // The Laravel slate runner is fed the trimmed URL via NyLaravelSlateConfig,
       // so the api service base URL must NOT end with '//app/v1'.
@@ -161,8 +166,7 @@ void main() {
       );
     });
 
-    test(
-        'does not embed any backend URL (Firebase is bootstrapped via '
+    test('does not embed any backend URL (Firebase is bootstrapped via '
         'flutterfire configure)', () {
       final stub = _byName(templates, 'firebase_provider').stub;
       expect(stub.contains('http://'), isFalse);
@@ -211,6 +215,50 @@ void main() {
       final stub = _byName(templates, 'revenue_cat_provider').stub;
       expect(stub, contains('Your RevenueCat IOS API Key'));
       expect(stub, contains('Your RevenueCat Android API Key'));
+    });
+  });
+
+  group('superwallRun', () {
+    test('produces a paywall_page and a superwall_provider', () {
+      final templates = superwallRun(
+        NySuperwallSlateConfig(
+          appleApiKey: 'apple_superwall_key',
+          androidApiKey: 'android_superwall_key',
+        ),
+      );
+      expect(_byName(templates, 'paywall_page').saveTo, pagesFolder);
+      expect(_byName(templates, 'superwall_provider').saveTo, providerFolder);
+    });
+
+    test('paywall_page requires superwallkit_flutter', () {
+      final templates = superwallRun(
+        NySuperwallSlateConfig(appleApiKey: 'a', androidApiKey: 'b'),
+      );
+      expect(
+        _byName(templates, 'paywall_page').pluginsRequired,
+        contains('superwallkit_flutter'),
+      );
+    });
+
+    test('interpolates configured api keys into the provider stub', () {
+      final templates = superwallRun(
+        NySuperwallSlateConfig(
+          appleApiKey: 'apple_xxx',
+          androidApiKey: 'android_yyy',
+        ),
+      );
+      final stub = _byName(templates, 'superwall_provider').stub;
+      expect(stub, contains('"apple_xxx"'));
+      expect(stub, contains('"android_yyy"'));
+    });
+
+    test('falls back to placeholder text when an api key is empty', () {
+      final templates = superwallRun(
+        NySuperwallSlateConfig(appleApiKey: '', androidApiKey: ''),
+      );
+      final stub = _byName(templates, 'superwall_provider').stub;
+      expect(stub, contains('Your Superwall IOS API Key'));
+      expect(stub, contains('Your Superwall Android API Key'));
     });
   });
 }

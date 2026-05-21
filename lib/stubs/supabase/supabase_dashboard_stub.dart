@@ -6,7 +6,6 @@ import 'package:nylo_framework/nylo_framework.dart';
 import '/app/events/logout_event.dart';
 import '/bootstrap/extensions.dart';
 import '/bootstrap/helpers.dart';
-import '/app/models/user.dart';
 
 class DashboardPage extends NyStatefulWidget {
   static RouteView path = ("/dashboard", (_) => DashboardPage());
@@ -14,7 +13,7 @@ class DashboardPage extends NyStatefulWidget {
   DashboardPage({super.key}) : super(child: () => _DashboardPageState());
 }
 
-class _DashboardPageState extends NyState<DashboardPage> {
+class _DashboardPageState extends NyPage<DashboardPage> {
 
   // Supabase user
   User? get _user {
@@ -50,7 +49,7 @@ class _DashboardPageState extends NyState<DashboardPage> {
                      margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
                      padding: EdgeInsets.all(15),
                      decoration: BoxDecoration(
-                         color: ThemeColor.get(context).background,
+                         color: ThemeColorResolver.get(context).general.background,
                          borderRadius: BorderRadius.circular(8),
                          boxShadow: [
                            BoxShadow(

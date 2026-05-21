@@ -6,7 +6,7 @@ import '/firebase_options.dart';
 
 class FirebaseProvider implements NyProvider {
   @override
-  boot(Nylo nylo) async {
+  setup(Nylo nylo) async {
 
     // firebase
     await Firebase.initializeApp(
@@ -23,7 +23,7 @@ class FirebaseProvider implements NyProvider {
   }
 
   @override
-  afterBoot(Nylo nylo) async {
+  boot(Nylo nylo) async {
     
   }
 }

@@ -14,7 +14,7 @@ class ForgotPasswordController extends Controller {
     validate(rules: {
       "email": [email, "email"]
     }, onSuccess: () async {
-      bool hasSentEmail = await api<LaravelAuthApiService>((request) => request.forgotPassword(email), context: context);
+      bool hasSentEmail = await api<LaravelAuthApiService>((request) => request.forgotPassword(email));
       if (hasSentEmail == false) {
         showToastSorry(description: "Unable to reset password. Please try again later.");
         return;

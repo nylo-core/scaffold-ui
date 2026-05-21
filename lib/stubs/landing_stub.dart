@@ -16,7 +16,7 @@ class LandingPage extends NyStatefulWidget {
   LandingPage({super.key}) : super(child: () => _LandingPageState());
 }
 
-class _LandingPageState extends NyState<LandingPage> {
+class _LandingPageState extends NyPage<LandingPage> {
 
   @override
   Widget view(BuildContext context) {
@@ -79,16 +79,20 @@ class _LandingPageState extends NyState<LandingPage> {
                                 Button.transparency(text: "Get Started", onPressed: () {
                                   routeTo(RegisterPage.path);
                                 }),
+                                
+                                Spacing.vertical(20),
 
-                                NyRichText(
+                                StyledText.template(
+                                  'Already have an account? {{Login}}',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 16),
-                                  children: [
-                                    Text("Already have an account? ", style: TextStyle(color: Colors.white)),
-                                    Text("Login", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                                  ],).onTap(() {
-                                  routeTo(LoginPage.path);
-                                }).paddingOnly(top: 20),
+                                  style: TextStyle(fontSize: 16, color: Colors.white),
+                                  styles: {
+                                    'Login': TextStyle(fontWeight: FontWeight.bold),
+                                  },
+                                  onTap: {
+                                    'Login': () => routeTo(LoginPage.path),
+                                  },
+                                ),
                               ],
                             ),
                           ),

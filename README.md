@@ -27,11 +27,16 @@ dart run scaffold_ui:main iap
 ```
 
 Currently supports:
-- **RevenueCat** - Complete integration with SDK and pre-built UI components for subscription management
+- **[RevenueCat](https://revenuecat.com)** - Complete integration with SDK and pre-built UI components for subscription management
+- **[Superwall](https://superwall.com)** - Remote-configurable paywalls with the `superwallkit_flutter` SDK; the CLI also patches `AndroidManifest.xml` for you
 
 ##### IOS Prerequisites
 - Open the `ios/Runner.xcworkspace` file in Xcode
 - Signing & Capabilities > Add the `In-App Purchase` capability
+- For Superwall: ensure your iOS deployment target is `14.0` or higher (`platform :ios, '14.0'` in `ios/Podfile`)
+
+##### Android Prerequisites
+- For Superwall: set `minSdkVersion 26` (or higher) in `android/app/build.gradle`
 
 ## Installation
 
@@ -44,8 +49,10 @@ dart pub add scaffold_ui
 This will add the following to your pubspec.yaml:
 ```yaml
 dependencies:
-  scaffold_ui: ^1.4.0
+  scaffold_ui: ^2.0.0
 ```
+
+> **Upgrading from 1.x?** 2.0.0 targets Nylo v7 (`nylo_framework: ^7.1.16`+) and requires Dart `^3.10.7`. See the [CHANGELOG](https://github.com/nylo-core/scaffold-ui/blob/2.x/CHANGELOG.md) for breaking changes.
 
 ## Setup Guides
 
@@ -110,10 +117,32 @@ For custom authentication implementations:
 2. Select `basic`
 3. The tool will generate UI components that you can customize with your authentication logic
 
+### RevenueCat In-App Purchases
+
+1. Create an account at [revenuecat.com](https://revenuecat.com) and grab your Apple/Android API keys
+2. Run the IAP scaffold command:
+   ```bash
+   dart run scaffold_ui:main iap
+   ```
+3. Select `RevenueCat` and paste each platform's API key (type `n` to skip a platform)
+4. To show the paywall: `routeTo(PaywallPage.path)`
+
+### Superwall In-App Purchases
+
+1. Create an account at [superwall.com](https://superwall.com) and grab your Apple/Android API keys
+2. Run the IAP scaffold command:
+   ```bash
+   dart run scaffold_ui:main iap
+   ```
+3. Select `Superwall` and paste each platform's API key (type `n` to skip a platform)
+4. The CLI will generate `paywall_page.dart`, `superwall_provider.dart`, and — if you supplied an Android key — register `SuperwallPaywallActivity` inside `android/app/src/main/AndroidManifest.xml`
+5. Customise the placement name (default `campaign_trigger`) in `lib/resources/pages/paywall_page.dart` to match the placement you configure in the Superwall dashboard
+6. To trigger the paywall: `routeTo(PaywallPage.path)`
+
 ## Changelog
 
-See [CHANGELOG](https://github.com/nylo-core/scaffold-ui/blob/1.x/CHANGELOG.md) for recent changes.
+See [CHANGELOG](https://github.com/nylo-core/scaffold-ui/blob/2.x/CHANGELOG.md) for recent changes.
 
 ## License
 
-This project is licensed under the MIT License - see the [License](https://github.com/nylo-core/scaffold-ui/blob/1.x/LICENSE) file for details.
+This project is licensed under the MIT License - see the [License](https://github.com/nylo-core/scaffold-ui/blob/2.x/LICENSE) file for details.

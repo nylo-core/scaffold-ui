@@ -316,11 +316,7 @@ void main() {
             'pick',
           ],
         ],
-        buffer: [
-          ...Keys.arrowUp,
-          ...Keys.arrowUp,
-          Keys.enter,
-        ],
+        buffer: [...Keys.arrowUp, ...Keys.arrowUp, Keys.enter],
       );
       expect(dialog.ask()['pick'], 'a');
     });
@@ -336,11 +332,7 @@ void main() {
             'pick',
           ],
         ],
-        buffer: [
-          ...Keys.arrowDown,
-          ...Keys.arrowUp,
-          Keys.enter,
-        ],
+        buffer: [...Keys.arrowDown, ...Keys.arrowUp, Keys.enter],
       );
       expect(dialog.ask()['pick'], 'a');
     });

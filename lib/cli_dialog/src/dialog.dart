@@ -43,15 +43,16 @@ class CliDialog {
   /// Furthermore you can pass a particular order. If no order is given then the default order is used (see README.md)
   /// There is also [trueByDefault] (false by default) which indicates how booleanQuestions behave if no input is given
   /// There are basic format checks which try to prevent you from passing invalid argmuents.
-  CliDialog(
-      {this.messages,
-      this.questions,
-      this.booleanQuestions,
-      this.listQuestions,
-      this.order,
-      this.trueByDefault = false,
-      this.navigationMode = false,
-      this.resume = ''}) {
+  CliDialog({
+    this.messages,
+    this.questions,
+    this.booleanQuestions,
+    this.listQuestions,
+    this.order,
+    this.trueByDefault = false,
+    this.navigationMode = false,
+    this.resume = '',
+  }) {
     _checkQuestions();
     _initializeLists();
   }
@@ -64,14 +65,17 @@ class CliDialog {
   /// std_input.addToBuffer(...Keys.arrowDown, Keys.enter);
   /// final dialog = CLI_Dialog.std(std_input, std_output, listQuestions: listQuestions);
   /// ```
-  CliDialog.std(this._stdInput, this._stdOutput,
-      {this.messages,
-      this.questions,
-      this.booleanQuestions,
-      this.listQuestions,
-      this.order,
-      this.trueByDefault = false,
-      this.navigationMode = false}) {
+  CliDialog.std(
+    this._stdInput,
+    this._stdOutput, {
+    this.messages,
+    this.questions,
+    this.booleanQuestions,
+    this.listQuestions,
+    this.order,
+    this.trueByDefault = false,
+    this.navigationMode = false,
+  }) {
     _checkQuestions();
     _initializeLists();
   }
@@ -92,11 +96,17 @@ class CliDialog {
   ///   isList: true,
   /// );
   /// ```
-  void addQuestion(pQuestion, key,
-      {bool isBoolean = false, isList = false, isMessage = false}) {
+  void addQuestion(
+    pQuestion,
+    key, {
+    bool isBoolean = false,
+    isList = false,
+    isMessage = false,
+  }) {
     if ((isBoolean ? 1 : 0) + (isList ? 1 : 0) + (isMessage ? 1 : 0) > 1) {
       throw ArgumentError(
-          'A question can not have more than one boolean qualifier.');
+        'A question can not have more than one boolean qualifier.',
+      );
     }
     final newItem = [pQuestion, key];
     if (isBoolean) {
@@ -111,8 +121,12 @@ class CliDialog {
   }
 
   /// Same as [addQuestion] but you can add multiple questions (of the same type)
-  void addQuestions(pQuestions,
-      {bool isBoolean = false, isList = false, isMessage = false}) {
+  void addQuestions(
+    pQuestions, {
+    bool isBoolean = false,
+    isList = false,
+    isMessage = false,
+  }) {
     if (isBoolean) {
       booleanQuestions!.addAll(pQuestions);
     } else if (isList) {
@@ -202,13 +216,15 @@ class CliDialog {
     if (messages != null) {
       for (var element in messages!) {
         final isPlainString = element is String;
-        final isStringKeyedPair = element is List &&
+        final isStringKeyedPair =
+            element is List &&
             element.length == 2 &&
             element[0] is String &&
             element[1] is String;
         if (!isPlainString && !isStringKeyedPair) {
           throw ArgumentError(
-              'Each message is either just a string or a list with a string and a key.');
+            'Each message is either just a string or a list with a string and a key.',
+          );
         }
       }
     }
@@ -219,7 +235,8 @@ class CliDialog {
           if (element != null) {
             if (element.length != 2) {
               throw ArgumentError(
-                  'Each question entry must be a list consisting of a question and a key.');
+                'Each question entry must be a list consisting of a question and a key.',
+              );
             }
           } else {
             throw ArgumentError('All questions and keys must be Strings.');
@@ -249,7 +266,8 @@ class CliDialog {
 
         if (element[0].length != 2) {
           throw ArgumentError(
-              'Your list dialog map must have exactly two entries.');
+            'Your list dialog map must have exactly two entries.',
+          );
         }
       }
     }
@@ -271,7 +289,9 @@ class CliDialog {
       final questionAndFunction = _findQuestion(order![i]);
       if (questionAndFunction != null) {
         questionAndFunction[1](
-            questionAndFunction[0][0], questionAndFunction[0][1]);
+          questionAndFunction[0][0],
+          questionAndFunction[0][1],
+        );
       }
     }
   }
@@ -290,7 +310,7 @@ class CliDialog {
       [messages, _displayMessage],
       [questions, _askQuestion],
       [booleanQuestions, _askBooleanQuestion],
-      [listQuestions, _askListQuestion]
+      [listQuestions, _askListQuestion],
     ]) {
       if (element[0] != null) {
         var retVal = _search(element[0], element[1], key);
@@ -308,7 +328,8 @@ class CliDialog {
     if (!_checkNavigation(input)) {
       answers[key] = input;
       _stdOutput.writeln(
-          '\r${_question(question)}${XTerm.teal(answers[key])}${XTerm.blankRemaining()}');
+        '\r${_question(question)}${XTerm.teal(answers[key])}${XTerm.blankRemaining()}',
+      );
     }
   }
 
@@ -353,24 +374,33 @@ class CliDialog {
         _stdOutput.write(XTerm.moveUp(1) + formattedQuestion);
       }
     } else {
-      input =
-          _stdInput.readLineSync(encoding: Encoding.getByName('utf-8'))!.trim();
+      input = _stdInput
+          .readLineSync(encoding: Encoding.getByName('utf-8'))!
+          .trim();
       _stdOutput.write(XTerm.moveUp(1) + formattedQuestion);
     }
     return input;
   }
 
   void _getListAnswer(options, key) {
-    var chooser = ListChooser.std(_stdInput, _stdOutput, options,
-        navigationMode: navigationMode);
+    var chooser = ListChooser.std(
+      _stdInput,
+      _stdOutput,
+      options,
+      navigationMode: navigationMode,
+    );
     final input = chooser.choose();
     if (!_checkNavigation(input)) {
       answers[key] = input;
     }
   }
 
-  List _getStdNavList() =>
-      [...messages!, ...questions!, ...booleanQuestions!, ...listQuestions!];
+  List _getStdNavList() => [
+    ...messages!,
+    ...questions!,
+    ...booleanQuestions!,
+    ...listQuestions!,
+  ];
 
   List getCustomNavList() {
     var navList = [];
@@ -405,12 +435,16 @@ class CliDialog {
   }
 
   void _iterateCustomOrder(List navlist) {
-    for (_navigationIndex;
-        _navigationIndex < navlist.length;
-        _navigationIndex++) {
+    for (
+      _navigationIndex;
+      _navigationIndex < navlist.length;
+      _navigationIndex++
+    ) {
       final element = navlist[_navigationIndex];
       _getFunctionForQuestionType(_getQuestionType(element))!(
-          element[0], element[1]);
+        element[0],
+        element[1],
+      );
     }
   }
 
