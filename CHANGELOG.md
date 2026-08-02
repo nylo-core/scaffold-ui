@@ -1,3 +1,9 @@
+## [2.0.1] - 2026-08-02
+
+### Changed
+
+* Bumped `nylo_support` dependency from `^7.26.0` to `^7.27.4`.
+
 ## [2.0.0] - 2026-05-21
 
 ### Added
