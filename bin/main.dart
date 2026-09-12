@@ -11,7 +11,7 @@ const String _usageHint =
     'In-app Purchases Usage: dart run scaffold_ui:main iap';
 
 void main(List<String> arguments) async {
-  final command = parseCommand(arguments);
+  final String? command = parseCommand(arguments);
   if (command == null) {
     MetroConsole.writeInRed('Invalid arguments');
     MetroConsole.writeInRed(_usageHint);
@@ -30,7 +30,7 @@ void main(List<String> arguments) async {
 }
 
 Future<void> auth() async {
-  final selection = CliDialog(
+  final Map<dynamic, dynamic> selection = CliDialog(
     listQuestions: [
       [
         {
@@ -43,12 +43,12 @@ Future<void> auth() async {
   ).ask();
 
   final backend = selection['backend'] as String;
-  final plan = planAuthSlate(backend: backend, prompt: _ask);
+  final SlatePlan? plan = planAuthSlate(backend: backend, prompt: _ask);
   if (plan == null) return;
 
   if (plan.packagesToAdd.isNotEmpty) {
     MetroConsole.writeInGreen('Installing $backend');
-    for (final package in plan.packagesToAdd) {
+    for (final String package in plan.packagesToAdd) {
       await _addPackage(package);
     }
   }
@@ -102,7 +102,7 @@ Future<void> auth() async {
 }
 
 Future<void> iap() async {
-  final selection = CliDialog(
+  final Map<dynamic, dynamic> selection = CliDialog(
     listQuestions: [
       [
         {
@@ -115,12 +115,12 @@ Future<void> iap() async {
   ).ask();
 
   final service = selection['iap'] as String;
-  final plan = planIapSlate(service: service, prompt: _ask);
+  final SlatePlan? plan = planIapSlate(service: service, prompt: _ask);
   if (plan == null) return;
 
   if (plan.packagesToAdd.isNotEmpty) {
     MetroConsole.writeInGreen('Installing $service');
-    for (final package in plan.packagesToAdd) {
+    for (final String package in plan.packagesToAdd) {
       await _addPackage(package);
     }
   }
@@ -129,7 +129,7 @@ Future<void> iap() async {
 
   if (service == 'RevenueCat') {
     final config = plan.config as NyRevenueCatSlateConfig;
-    final iosHint = iosSetupHintFor(
+    final String iosHint = iosSetupHintFor(
       appleKeyProvided: (config.appleAppId ?? '').isNotEmpty,
     );
     MetroConsole.writeInGreen(
@@ -139,15 +139,15 @@ Future<void> iap() async {
 
   if (service == 'Superwall') {
     final config = plan.config as NySuperwallSlateConfig;
-    final androidKeyProvided = (config.androidApiKey ?? '').isNotEmpty;
+    final bool androidKeyProvided = (config.androidApiKey ?? '').isNotEmpty;
     if (androidKeyProvided) {
       _patchAndroidManifestForSuperwall();
     }
 
-    final iosHint = superwallIosSetupHintFor(
+    final String iosHint = superwallIosSetupHintFor(
       appleKeyProvided: (config.appleApiKey ?? '').isNotEmpty,
     );
-    final androidHint = superwallAndroidSetupHintFor(
+    final String androidHint = superwallAndroidSetupHintFor(
       androidKeyProvided: androidKeyProvided,
     );
     MetroConsole.writeInGreen(
@@ -175,8 +175,8 @@ void _patchAndroidManifestForSuperwall() {
     return;
   }
 
-  final original = manifestFile.readAsStringSync();
-  final patched = patchAndroidManifestForSuperwall(original);
+  final String original = manifestFile.readAsStringSync();
+  final PatchedManifest patched = patchAndroidManifestForSuperwall(original);
   switch (patched.result) {
     case AndroidManifestPatchResult.added:
       manifestFile.writeAsStringSync(patched.content);
@@ -212,13 +212,13 @@ String _ask(String question) {
 // the child via `stdin.pipe(process.stdin)`, which leaves stdin consumed and
 // causes the next `readLineSync` in this CLI to return null.
 Future<int> _addPackage(String package) async {
-  final process = await Process.start(
+  final Process process = await Process.start(
     'dart',
     ['pub', 'add', package],
     runInShell: true,
     mode: ProcessStartMode.inheritStdio,
   );
-  final exitCode = await process.exitCode;
+  final int exitCode = await process.exitCode;
   if (exitCode != 0) {
     MetroConsole.writeInRed('Error adding package $package: $exitCode');
   }

@@ -171,31 +171,31 @@ void main() {
 
   group('CliDialog text input (mock mode)', () {
     test('captures a single text answer from the mock buffer', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         questions: [
           ['What is your Supabase URL?', 'supabase_url'],
         ],
         buffer: ['https://abc.supabase.co'],
       );
-      final answers = dialog.ask();
+      final Map<dynamic, dynamic> answers = dialog.ask();
       expect(answers['supabase_url'], 'https://abc.supabase.co');
     });
 
     test('captures multiple text answers in declared order', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         questions: [
           ['What is your Supabase URL?', 'supabase_url'],
           ['What is your Supabase Anon Key?', 'supabase_anon_key'],
         ],
         buffer: ['https://abc.supabase.co', 'eyJanon'],
       );
-      final answers = dialog.ask();
+      final Map<dynamic, dynamic> answers = dialog.ask();
       expect(answers['supabase_url'], 'https://abc.supabase.co');
       expect(answers['supabase_anon_key'], 'eyJanon');
     });
 
     test('trims whitespace around the typed answer', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         questions: [
           ['url?', 'url'],
         ],
@@ -207,7 +207,7 @@ void main() {
 
   group('CliDialog boolean input (mock mode)', () {
     test('y -> true, regardless of default', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         booleanQuestions: [
           ['Continue?', 'cont'],
         ],
@@ -217,7 +217,7 @@ void main() {
     });
 
     test('n -> false', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         booleanQuestions: [
           ['Continue?', 'cont'],
         ],
@@ -227,7 +227,7 @@ void main() {
     });
 
     test('empty answer falls back to trueByDefault=true', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         booleanQuestions: [
           ['Continue?', 'cont'],
         ],
@@ -238,7 +238,7 @@ void main() {
     });
 
     test('empty answer falls back to trueByDefault=false', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         booleanQuestions: [
           ['Continue?', 'cont'],
         ],
@@ -251,7 +251,7 @@ void main() {
 
   group('CliDialog list selection (mock mode)', () {
     test('Enter at the top picks the first option', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         listQuestions: [
           [
             {
@@ -267,7 +267,7 @@ void main() {
     });
 
     test('arrowDown then Enter picks the second option', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         listQuestions: [
           [
             {
@@ -285,7 +285,7 @@ void main() {
     });
 
     test('arrowDown past the last option clamps to the last option', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         listQuestions: [
           [
             {
@@ -306,7 +306,7 @@ void main() {
     });
 
     test('arrowUp at the top clamps to the first option', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         listQuestions: [
           [
             {
@@ -322,7 +322,7 @@ void main() {
     });
 
     test('down then up returns to the first option', () {
-      final dialog = _mockDialog(
+      final CliDialog dialog = _mockDialog(
         listQuestions: [
           [
             {

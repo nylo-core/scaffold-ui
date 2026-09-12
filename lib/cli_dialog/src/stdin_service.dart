@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import '/cli_dialog/src/stdout_service.dart';
 import 'package:nylo_support/dart_console/ny_dart_console.dart';
@@ -31,7 +32,7 @@ class StdinService {
   /// std_input = StdinService(mock: true, informStdout: std_output);
   /// std_input.addToBuffer('Some input\n', ...Keys.arrowDown, Keys.enter);
   /// ```
-  void addToBuffer(elements) {
+  void addToBuffer(Object? elements) {
     if (elements is Iterable) {
       _mockBuffer.addAll(elements);
     } else {
@@ -42,7 +43,7 @@ class StdinService {
   /// Use this to read a byte, whether in  [mock] mode or with real stdin.
   int? readByteSync() {
     if (mock) {
-      var ret = _mockBuffer[0];
+      dynamic ret = _mockBuffer[0];
       _mockBuffer.removeAt(0);
       return (ret is int ? ret : int.parse(ret));
     }
@@ -68,23 +69,23 @@ class StdinService {
   }
 
   /// Use this to read a whole line, whether in [mock] mode or with real stdin.
-  String? readLineSync({encoding}) {
+  String? readLineSync({Encoding? encoding}) {
     if (mock) {
-      var ret = _mockBuffer[0];
+      dynamic ret = _mockBuffer[0];
       _mockBuffer.removeAt(0);
       if (informStdout != null && (_isTest || _getEchomode())) {
         informStdout!.write(ret);
       }
       return ret;
     }
-    return stdin.readLineSync(encoding: encoding);
+    return stdin.readLineSync(encoding: encoding ?? systemEncoding);
   }
 
   // END OF PUBLIC API
 
   bool _isTest = false;
 
-  final _mockBuffer = [];
+  final List<dynamic> _mockBuffer = [];
   bool _getEchomode() {
     if (!stdin.hasTerminal) {
       return false;

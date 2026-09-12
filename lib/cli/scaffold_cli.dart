@@ -67,7 +67,7 @@ const String androidSuperwallKeyPrompt =
 /// for printing a usage hint and exiting with a non-zero status code.
 String? parseCommand(List<String> args) {
   if (args.length != 1) return null;
-  final cmd = args[0];
+  final String cmd = args[0];
   if (cmd != 'auth' && cmd != 'iap') return null;
   return cmd;
 }
@@ -80,8 +80,8 @@ String? parseCommand(List<String> args) {
 SlatePlan? planAuthSlate({required String backend, required Prompt prompt}) {
   switch (backend) {
     case 'Supabase':
-      final url = prompt(supabaseUrlPrompt);
-      final anonKey = prompt(supabaseAnonKeyPrompt);
+      final String url = prompt(supabaseUrlPrompt);
+      final String anonKey = prompt(supabaseAnonKeyPrompt);
       final config = NySupabaseSlateConfig(url: url, anonKey: anonKey);
       return SlatePlan(
         packagesToAdd: const ['supabase_flutter'],
@@ -119,9 +119,9 @@ SlatePlan? planAuthSlate({required String backend, required Prompt prompt}) {
 SlatePlan? planIapSlate({required String service, required Prompt prompt}) {
   switch (service) {
     case 'RevenueCat':
-      var apple = prompt(appleRevenueCatKeyPrompt);
+      String apple = prompt(appleRevenueCatKeyPrompt);
       if (apple == 'n') apple = '';
-      var android = prompt(androidRevenueCatKeyPrompt);
+      String android = prompt(androidRevenueCatKeyPrompt);
       if (android == 'n') android = '';
       final config = NyRevenueCatSlateConfig(
         appleAppId: apple,
@@ -133,9 +133,9 @@ SlatePlan? planIapSlate({required String service, required Prompt prompt}) {
         config: config,
       );
     case 'Superwall':
-      var apple = prompt(appleSuperwallKeyPrompt);
+      String apple = prompt(appleSuperwallKeyPrompt);
       if (apple == 'n') apple = '';
-      var android = prompt(androidSuperwallKeyPrompt);
+      String android = prompt(androidSuperwallKeyPrompt);
       if (android == 'n') android = '';
       final config = NySuperwallSlateConfig(
         appleApiKey: apple,
@@ -242,7 +242,7 @@ PatchedManifest patchAndroidManifestForSuperwall(String manifestContent) {
     );
   }
 
-  final appTagStart = manifestContent.indexOf('<application');
+  final int appTagStart = manifestContent.indexOf('<application');
   if (appTagStart == -1) {
     return PatchedManifest(
       manifestContent,
@@ -252,7 +252,7 @@ PatchedManifest patchAndroidManifestForSuperwall(String manifestContent) {
   // Find the closing `>` of the `<application ...>` opening tag. A real
   // Flutter manifest always has children inside it, so we don't special-case
   // a self-closing `<application .../>`.
-  final appTagEnd = manifestContent.indexOf('>', appTagStart);
+  final int appTagEnd = manifestContent.indexOf('>', appTagStart);
   if (appTagEnd == -1) {
     return PatchedManifest(
       manifestContent,
@@ -261,7 +261,7 @@ PatchedManifest patchAndroidManifestForSuperwall(String manifestContent) {
   }
 
   final insertion = '\n        $superwallAndroidActivityXml';
-  final patched =
+  final String patched =
       manifestContent.substring(0, appTagEnd + 1) +
       insertion +
       manifestContent.substring(appTagEnd + 1);

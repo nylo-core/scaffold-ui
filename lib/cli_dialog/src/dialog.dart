@@ -97,18 +97,18 @@ class CliDialog {
   /// );
   /// ```
   void addQuestion(
-    pQuestion,
-    key, {
+    Object pQuestion,
+    String key, {
     bool isBoolean = false,
-    isList = false,
-    isMessage = false,
+    bool isList = false,
+    bool isMessage = false,
   }) {
     if ((isBoolean ? 1 : 0) + (isList ? 1 : 0) + (isMessage ? 1 : 0) > 1) {
       throw ArgumentError(
         'A question can not have more than one boolean qualifier.',
       );
     }
-    final newItem = [pQuestion, key];
+    final List<Object> newItem = [pQuestion, key];
     if (isBoolean) {
       booleanQuestions!.add(newItem);
     } else if (isList) {
@@ -122,10 +122,10 @@ class CliDialog {
 
   /// Same as [addQuestion] but you can add multiple questions (of the same type)
   void addQuestions(
-    pQuestions, {
+    Iterable<dynamic> pQuestions, {
     bool isBoolean = false,
-    isList = false,
-    isMessage = false,
+    bool isList = false,
+    bool isMessage = false,
   }) {
     if (isBoolean) {
       booleanQuestions!.addAll(pQuestions);
@@ -162,30 +162,30 @@ class CliDialog {
   var _stdInput = StdinService();
   var _stdOutput = StdoutService();
 
-  void _askBooleanQuestion(question, key) {
+  void _askBooleanQuestion(String question, String key) {
     _stdOutput.write(_booleanQuestion(question));
     _getBooleanAnswer(question, key);
   }
 
-  void _askListQuestion(optionsMap, key) {
+  void _askListQuestion(Map optionsMap, String key) {
     _stdOutput.writeln(_listQuestion(optionsMap['question']));
     _getListAnswer(optionsMap['options'], key);
   }
 
-  void _askQuestion(question, key) {
+  void _askQuestion(String question, String key) {
     _stdOutput.write(_question(question));
     _getAnswer(question, key);
   }
 
-  String _booleanQuestion(str) =>
+  String _booleanQuestion(String str) =>
       '${_question(str)}${_comment(trueByDefault ? '(Y/n)' : '(y/N)')} ';
 
   void _checkDuplicateKeys() {
-    var keyList = [];
+    List<dynamic> keyList = [];
 
-    for (var entry in [questions, booleanQuestions, listQuestions]) {
+    for (List<dynamic>? entry in [questions, booleanQuestions, listQuestions]) {
       if (entry != null) {
-        for (var element in entry) {
+        for (List<dynamic> element in entry) {
           keyList.add(element[1]);
         }
       }
@@ -214,9 +214,9 @@ class CliDialog {
 
   void _checkQuestions() {
     if (messages != null) {
-      for (var element in messages!) {
+      for (Object? element in messages!) {
         final isPlainString = element is String;
-        final isStringKeyedPair =
+        final bool isStringKeyedPair =
             element is List &&
             element.length == 2 &&
             element[0] is String &&
@@ -229,11 +229,11 @@ class CliDialog {
       }
     }
 
-    for (var entry in [questions, booleanQuestions, listQuestions]) {
+    for (List<dynamic>? entry in [questions, booleanQuestions, listQuestions]) {
       if (entry != null) {
-        for (var element in entry) {
+        for (Object? element in entry) {
           if (element != null) {
-            if (element.length != 2) {
+            if (element is! List || element.length != 2) {
               throw ArgumentError(
                 'Each question entry must be a list consisting of a question and a key.',
               );
@@ -245,9 +245,9 @@ class CliDialog {
       }
     }
 
-    for (var entry in [questions, booleanQuestions]) {
+    for (List<dynamic>? entry in [questions, booleanQuestions]) {
       if (entry != null) {
-        for (var element in entry) {
+        for (List<dynamic> element in entry) {
           if (element[0] is! String || element[1] is! String) {
             throw ArgumentError('All questions and keys must be Strings.');
           }
@@ -256,7 +256,7 @@ class CliDialog {
     }
 
     if (listQuestions != null) {
-      for (var element in listQuestions!) {
+      for (List<dynamic> element in listQuestions!) {
         if (element[0]['question'] is! String) {
           throw ArgumentError('Your question must be a String.');
         }
@@ -274,7 +274,7 @@ class CliDialog {
     _checkDuplicateKeys();
   }
 
-  String _comment(str) => XTerm.gray(str);
+  String _comment(String str) => XTerm.gray(str);
 
   void _customOrder() {
     if (navigationMode) {
@@ -286,7 +286,7 @@ class CliDialog {
 
   void _customOrderWithoutNavigation() {
     for (var i = 0; i < order!.length; i++) {
-      final questionAndFunction = _findQuestion(order![i]);
+      final dynamic questionAndFunction = _findQuestion(order![i]);
       if (questionAndFunction != null) {
         questionAndFunction[1](
           questionAndFunction[0][0],
@@ -296,7 +296,7 @@ class CliDialog {
     }
   }
 
-  void _displayMessage(msg, key) {
+  void _displayMessage(dynamic msg, String key) {
     if (msg is String) {
       _stdOutput.writeln(_comment(msg));
     } else {
@@ -304,16 +304,16 @@ class CliDialog {
     }
   }
 
-  dynamic _findQuestion(key) {
+  dynamic _findQuestion(String key) {
     dynamic ret;
-    for (var element in [
+    for (List<Object?> element in [
       [messages, _displayMessage],
       [questions, _askQuestion],
       [booleanQuestions, _askBooleanQuestion],
       [listQuestions, _askListQuestion],
     ]) {
       if (element[0] != null) {
-        var retVal = _search(element[0], element[1], key);
+        dynamic retVal = _search(element[0], element[1], key);
         if (retVal != null) {
           ret = retVal;
           continue;
@@ -323,8 +323,8 @@ class CliDialog {
     return ret;
   }
 
-  void _getAnswer(question, key) {
-    final input = _getInput(_question(question));
+  void _getAnswer(String question, String key) {
+    final String input = _getInput(_question(question));
     if (!_checkNavigation(input)) {
       answers[key] = input;
       _stdOutput.writeln(
@@ -333,8 +333,11 @@ class CliDialog {
     }
   }
 
-  void _getBooleanAnswer(question, key) {
-    var input = _getInput(_booleanQuestion(question), acceptEmptyAnswer: true);
+  void _getBooleanAnswer(String question, String key) {
+    String input = _getInput(
+      _booleanQuestion(question),
+      acceptEmptyAnswer: true,
+    );
     if (!_checkNavigation(input)) {
       if (input.isEmpty) {
         answers[key] = trueByDefault;
@@ -348,7 +351,7 @@ class CliDialog {
     }
   }
 
-  Function? _getFunctionForQuestionType(type) {
+  Function? _getFunctionForQuestionType(CliDialogQuestionType? type) {
     if (type == CliDialogQuestionType.message) {
       return _displayMessage;
     }
@@ -364,7 +367,7 @@ class CliDialog {
     return null;
   }
 
-  String _getInput(formattedQuestion, {acceptEmptyAnswer = false}) {
+  String _getInput(String formattedQuestion, {bool acceptEmptyAnswer = false}) {
     var input = '';
     if (!acceptEmptyAnswer) {
       while (input.isEmpty) {
@@ -382,14 +385,14 @@ class CliDialog {
     return input;
   }
 
-  void _getListAnswer(options, key) {
+  void _getListAnswer(List<String>? options, String key) {
     var chooser = ListChooser.std(
       _stdInput,
       _stdOutput,
       options,
       navigationMode: navigationMode,
     );
-    final input = chooser.choose();
+    final String input = chooser.choose();
     if (!_checkNavigation(input)) {
       answers[key] = input;
     }
@@ -403,14 +406,14 @@ class CliDialog {
   ];
 
   List getCustomNavList() {
-    var navList = [];
-    for (var key in order!) {
+    List<dynamic> navList = [];
+    for (String key in order!) {
       navList.add(_simpleSearch(key));
     }
     return navList;
   }
 
-  CliDialogQuestionType? _getQuestionType(item) {
+  CliDialogQuestionType? _getQuestionType(Object? item) {
     if (messages!.contains(item)) {
       return CliDialogQuestionType.message;
     }
@@ -440,7 +443,7 @@ class CliDialog {
       _navigationIndex < navlist.length;
       _navigationIndex++
     ) {
-      final element = navlist[_navigationIndex];
+      final dynamic element = navlist[_navigationIndex];
       _getFunctionForQuestionType(_getQuestionType(element))!(
         element[0],
         element[1],
@@ -448,12 +451,13 @@ class CliDialog {
     }
   }
 
-  String _listQuestion(str) => _question(str) + _comment('(Use arrow keys)');
+  String _listQuestion(String str) =>
+      _question(str) + _comment('(Use arrow keys)');
 
   int get _messagesBefore {
     var messagesBefore = 0;
     if (navigationMode && order != null) {
-      for (var i = _navigationIndex - 1; i >= 0; i--) {
+      for (int i = _navigationIndex - 1; i >= 0; i--) {
         if (_getQuestionType(_simpleSearch(order![i])) ==
             CliDialogQuestionType.message) {
           messagesBefore++;
@@ -465,9 +469,9 @@ class CliDialog {
 
   int _navigationIndex = 0;
 
-  String _question(str) =>
+  String _question(String str) =>
       '${navigationMode ? '(${_navigationIndex + 1 - _messagesBefore}) ' : ''}${XTerm.green('?')} ${XTerm.bold(str)} ';
-  dynamic _search(list, fn, key) {
+  dynamic _search(dynamic list, dynamic fn, String key) {
     dynamic ret;
     list.forEach((element) {
       if (element[1] == key) {
@@ -480,9 +484,14 @@ class CliDialog {
 
   dynamic _simpleSearch(String key) {
     dynamic ret;
-    for (var list in [messages, questions, booleanQuestions, listQuestions]) {
-      for (var element in list!) {
-        if (element[1] == key) {
+    for (List<dynamic>? list in [
+      messages,
+      questions,
+      booleanQuestions,
+      listQuestions,
+    ]) {
+      for (Object? element in list!) {
+        if (element is List && element[1] == key) {
           ret = element;
           continue; // break
         }

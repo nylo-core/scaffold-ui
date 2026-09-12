@@ -48,7 +48,7 @@ void main() {
       // The function reads Platform.isWindows at call-time. We can only assert
       // the output for whichever platform we're actually on, but we can pin
       // the colour wrapping in both cases.
-      final indicator = XTerm.rightIndicator();
+      final String indicator = XTerm.rightIndicator();
       expect(indicator, contains(_esc)); // teal-wrapped
       if (Platform.isWindows) {
         expect(indicator, contains('>'));

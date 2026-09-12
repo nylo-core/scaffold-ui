@@ -17,7 +17,7 @@ bool _hasName(List<NyTemplate> templates, String name) =>
 
 void main() {
   group('basicRun', () {
-    final templates = basicRun();
+    final List<NyTemplate> templates = basicRun();
 
     test('produces every page, controller and form expected by Basic auth', () {
       const expected = {
@@ -32,7 +32,7 @@ void main() {
         'register_form',
         'login_form',
       };
-      final actual = templates.map((t) => t.name).toSet();
+      final Set<String> actual = templates.map((t) => t.name).toSet();
       expect(actual, containsAll(expected));
     });
 
@@ -62,7 +62,7 @@ void main() {
   });
 
   group('laravelRun', () {
-    final templates = laravelRun(
+    final List<NyTemplate> templates = laravelRun(
       NyLaravelSlateConfig(url: 'https://api.example.com/'),
     );
 
@@ -97,19 +97,19 @@ void main() {
         'service stub', () {
       // The Laravel slate runner is fed the trimmed URL via NyLaravelSlateConfig,
       // so the api service base URL must NOT end with '//app/v1'.
-      final apiStub = _byName(templates, 'laravel_api_service').stub;
+      final String apiStub = _byName(templates, 'laravel_api_service').stub;
       expect(apiStub, contains("'https://api.example.com/app/v1'"));
       expect(apiStub.contains("'https://api.example.com//app/v1'"), isFalse);
     });
 
     test('auth api service stub references the configured base URL', () {
-      final stub = _byName(templates, 'laravel_auth_api_service').stub;
+      final String stub = _byName(templates, 'laravel_auth_api_service').stub;
       expect(stub, contains('https://api.example.com'));
     });
   });
 
   group('supabaseRun', () {
-    final templates = supabaseRun(
+    final List<NyTemplate> templates = supabaseRun(
       NySupabaseSlateConfig(
         url: 'https://abc.supabase.co',
         anonKey: 'eyJabc.public.anon',
@@ -117,7 +117,7 @@ void main() {
     );
 
     test('emits the supabase_provider in the providers folder', () {
-      final t = _byName(templates, 'supabase_provider');
+      final NyTemplate t = _byName(templates, 'supabase_provider');
       expect(t.saveTo, providerFolder);
     });
 
@@ -126,7 +126,7 @@ void main() {
     });
 
     test('interpolates URL and anonKey into supabase_provider stub', () {
-      final stub = _byName(templates, 'supabase_provider').stub;
+      final String stub = _byName(templates, 'supabase_provider').stub;
       expect(stub, contains("url: 'https://abc.supabase.co'"));
       expect(stub, contains("anonKey: 'eyJabc.public.anon'"));
     });
@@ -145,7 +145,7 @@ void main() {
   });
 
   group('firebaseRun', () {
-    final templates = firebaseRun();
+    final List<NyTemplate> templates = firebaseRun();
 
     test('emits the firebase_provider in the providers folder', () {
       expect(_byName(templates, 'firebase_provider').saveTo, providerFolder);
@@ -168,7 +168,7 @@ void main() {
 
     test('does not embed any backend URL (Firebase is bootstrapped via '
         'flutterfire configure)', () {
-      final stub = _byName(templates, 'firebase_provider').stub;
+      final String stub = _byName(templates, 'firebase_provider').stub;
       expect(stub.contains('http://'), isFalse);
       expect(stub.contains('https://'), isFalse);
     });
@@ -176,7 +176,7 @@ void main() {
 
   group('revenueCatRun', () {
     test('produces a paywall_page and a revenue_cat_provider', () {
-      final templates = revenueCatRun(
+      final List<NyTemplate> templates = revenueCatRun(
         NyRevenueCatSlateConfig(
           appleAppId: 'apple_revenuecat_key',
           androidAppId: 'android_revenuecat_key',
@@ -187,7 +187,7 @@ void main() {
     });
 
     test('paywall_page requires purchases_ui_flutter', () {
-      final templates = revenueCatRun(
+      final List<NyTemplate> templates = revenueCatRun(
         NyRevenueCatSlateConfig(appleAppId: 'a', androidAppId: 'b'),
       );
       expect(
@@ -197,22 +197,22 @@ void main() {
     });
 
     test('interpolates configured app IDs into the provider stub', () {
-      final templates = revenueCatRun(
+      final List<NyTemplate> templates = revenueCatRun(
         NyRevenueCatSlateConfig(
           appleAppId: 'apple_xxx',
           androidAppId: 'android_yyy',
         ),
       );
-      final stub = _byName(templates, 'revenue_cat_provider').stub;
+      final String stub = _byName(templates, 'revenue_cat_provider').stub;
       expect(stub, contains('"apple_xxx"'));
       expect(stub, contains('"android_yyy"'));
     });
 
     test('falls back to placeholder text when an app ID is empty', () {
-      final templates = revenueCatRun(
+      final List<NyTemplate> templates = revenueCatRun(
         NyRevenueCatSlateConfig(appleAppId: '', androidAppId: ''),
       );
-      final stub = _byName(templates, 'revenue_cat_provider').stub;
+      final String stub = _byName(templates, 'revenue_cat_provider').stub;
       expect(stub, contains('Your RevenueCat IOS API Key'));
       expect(stub, contains('Your RevenueCat Android API Key'));
     });
@@ -220,7 +220,7 @@ void main() {
 
   group('superwallRun', () {
     test('produces a paywall_page and a superwall_provider', () {
-      final templates = superwallRun(
+      final List<NyTemplate> templates = superwallRun(
         NySuperwallSlateConfig(
           appleApiKey: 'apple_superwall_key',
           androidApiKey: 'android_superwall_key',
@@ -231,7 +231,7 @@ void main() {
     });
 
     test('paywall_page requires superwallkit_flutter', () {
-      final templates = superwallRun(
+      final List<NyTemplate> templates = superwallRun(
         NySuperwallSlateConfig(appleApiKey: 'a', androidApiKey: 'b'),
       );
       expect(
@@ -241,22 +241,22 @@ void main() {
     });
 
     test('interpolates configured api keys into the provider stub', () {
-      final templates = superwallRun(
+      final List<NyTemplate> templates = superwallRun(
         NySuperwallSlateConfig(
           appleApiKey: 'apple_xxx',
           androidApiKey: 'android_yyy',
         ),
       );
-      final stub = _byName(templates, 'superwall_provider').stub;
+      final String stub = _byName(templates, 'superwall_provider').stub;
       expect(stub, contains('"apple_xxx"'));
       expect(stub, contains('"android_yyy"'));
     });
 
     test('falls back to placeholder text when an api key is empty', () {
-      final templates = superwallRun(
+      final List<NyTemplate> templates = superwallRun(
         NySuperwallSlateConfig(appleApiKey: '', androidApiKey: ''),
       );
-      final stub = _byName(templates, 'superwall_provider').stub;
+      final String stub = _byName(templates, 'superwall_provider').stub;
       expect(stub, contains('Your Superwall IOS API Key'));
       expect(stub, contains('Your Superwall Android API Key'));
     });

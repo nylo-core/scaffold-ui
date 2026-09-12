@@ -10,7 +10,7 @@ class StdoutService {
   StdoutService({this.mock = false});
 
   /// Use this to write a string, whether in [mock] mode or with real stdout.
-  void write(str) {
+  void write(String str) {
     if (mock) {
       _buffer += str;
       _flush();
@@ -21,9 +21,9 @@ class StdoutService {
 
   /// Use this to write a string with a trailing newline ('\n').
   /// Whether in [mock] mode or with real stdout.
-  void writeln(str) {
+  void writeln(String str) {
     if (mock) {
-      _buffer += str + '\n';
+      _buffer += '$str\n';
       _flush();
     } else {
       stdout.writeln(str);
@@ -34,8 +34,8 @@ class StdoutService {
   /// Empty strings at the end are removed.
   /// For a string version see [getStringOutput]
   List getOutput() {
-    final ret = [];
-    for (var element in _output) {
+    final List<dynamic> ret = [];
+    for (String element in _output) {
       if (element.isNotEmpty) {
         ret.add(element);
       }
@@ -54,7 +54,7 @@ class StdoutService {
   final _output = [''];
 
   void _addChar() {
-    var currLine = _output[_cursor['y']!].split('');
+    List<String> currLine = _output[_cursor['y']!].split('');
     if (_cursor['x']! < currLine.length) {
       currLine.removeAt(_cursor['x']!);
       currLine.insert(_cursor['x']!, _buffer[0]);
@@ -66,10 +66,10 @@ class StdoutService {
   }
 
   void _flush() {
-    var bufferCpy = _buffer; // copy of buffer
+    String bufferCpy = _buffer; // copy of buffer
 
     for (var i = 0; i < bufferCpy.length; i++) {
-      var utf16char = bufferCpy[i];
+      String utf16char = bufferCpy[i];
 
       switch (utf16char) {
         case '\n':
@@ -79,9 +79,9 @@ class StdoutService {
           _handleCarriageReturn();
           break;
         case '\u001b':
-          var found = _handleEscapeSequence();
+          bool found = _handleEscapeSequence();
           if (found) {
-            var toSkip = _removeSequenceFromBuffer();
+            int toSkip = _removeSequenceFromBuffer();
             i += toSkip;
             continue;
           } else {
@@ -109,7 +109,7 @@ class StdoutService {
   }
 
   bool _handleEscapeSequence() {
-    final sequence = _buffer.substring(1, _getDelimiterIndex() + 1);
+    final String sequence = _buffer.substring(1, _getDelimiterIndex() + 1);
 
     if (sequence == '[0K') {
       //blank remaning
@@ -121,7 +121,7 @@ class StdoutService {
     }
     if (RegExp(r'\[\dA').hasMatch(sequence)) {
       _cursor['x'] = 0;
-      var stepsUp = int.parse(
+      int stepsUp = int.parse(
         RegExp(r'\[\dA').firstMatch(sequence)!.group(0)![1],
       );
       if (_cursor['y']! - stepsUp >= 0) {
@@ -147,7 +147,7 @@ class StdoutService {
   }
 
   int _removeSequenceFromBuffer() {
-    var delimIndex = _getDelimiterIndex();
+    int delimIndex = _getDelimiterIndex();
     _buffer = _buffer.substring(delimIndex + 1);
     return delimIndex;
   }

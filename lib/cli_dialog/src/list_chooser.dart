@@ -80,15 +80,15 @@ class ListChooser {
   }
 
   int? _checkNavigation() {
-    final input = _stdInput.readByteSync();
+    final int? input = _stdInput.readByteSync();
     if (navigationMode) {
       if (input == 58) {
         // 58 = :
         _stdOutput.write(':');
-        final inputLine = _stdInput.readLineSync(
+        final String inputLine = _stdInput.readLineSync(
           encoding: Encoding.getByName('utf-8'),
         )!;
-        final lineNumber = int.parse(inputLine.trim());
+        final int lineNumber = int.parse(inputLine.trim());
         _stdOutput.writeln('$lineNumber');
         return -lineNumber; // make the result negative so it can be told apart from normal key codes
       } else {
@@ -105,7 +105,7 @@ class ListChooser {
     }
   }
 
-  void _renderList(index, {initial = false}) {
+  void _renderList(int index, {bool initial = false}) {
     if (!initial) {
       _deletePreviousList();
     }
@@ -134,7 +134,7 @@ class ListChooser {
   }
 
   int? _userInput() {
-    final navigationResult =
+    final int navigationResult =
         _checkNavigation()!; // just receives the read byte, if not successful,
     if (navigationResult < 0) {
       // < 0 = user has navigated
@@ -157,11 +157,11 @@ class ListChooser {
       if (navigationResult == enter) {
         return enter;
       }
-      final anotherByte = _stdInput.readByteSync();
+      final int? anotherByte = _stdInput.readByteSync();
       if (anotherByte == enter) {
         return enter;
       }
-      final input = _stdInput.readByteSync();
+      final int? input = _stdInput.readByteSync();
       return input;
     }
   }
@@ -183,15 +183,17 @@ void _restoreWindowsConsoleInputMode() {
   if (!Platform.isWindows) return;
   try {
     final kernel32 = DynamicLibrary.open('kernel32.dll');
-    final getStdHandle = kernel32
+    final _GetStdHandleDart getStdHandle = kernel32
         .lookupFunction<_GetStdHandleNative, _GetStdHandleDart>('GetStdHandle');
-    final setConsoleMode = kernel32
+    final _SetConsoleModeDart setConsoleMode = kernel32
         .lookupFunction<_SetConsoleModeNative, _SetConsoleModeDart>(
           'SetConsoleMode',
         );
     setConsoleMode(getStdHandle(_stdInputHandle), _interactiveInputMode);
-  } catch (_) {
+  } catch (e) {
     // Best-effort: if the FFI lookup fails, fall back to whatever
-    // stdin.lineMode/echoMode managed to restore.
+    // stdin.lineMode/echoMode managed to restore, but say so — a console
+    // left without line input otherwise just looks like a hang.
+    stderr.writeln('Could not restore the Windows console input mode: $e');
   }
 }

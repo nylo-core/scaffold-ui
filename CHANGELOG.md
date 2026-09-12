@@ -1,3 +1,25 @@
+## [2.0.2] - 2026-09-13
+
+### Changed
+
+* Bumped `nylo_support` dependency from `^7.27.4` to `^7.29.0`.
+* Added explicit type annotations across the CLI, `cli_dialog`, and tests so the package analyzes cleanly under the `vibe_check` Nylo lint preset. A few `cli_dialog` helper signatures are now typed to match how they were already used at runtime (only affects code that imported `package:scaffold_ui/cli_dialog/...` directly, which is not the documented usage):
+  * `CliDialog.addQuestion` takes an `Object` question, a `String` key, and `bool` flags; `addQuestions` takes an `Iterable`.
+  * `StdoutService.write` / `writeln` take a `String`, and `StdinService.readLineSync` takes an `Encoding?`.
+  * `XTerm.moveUp` takes an `int` and `XTerm.replacePreviousLine` takes a `String`. The color helpers (`bold`, `gray`, `green`, `teal`) accept any `Object?`.
+
+### Fixed
+
+* If restoring the Windows console input mode after a list selection fails, the CLI now prints a warning to stderr instead of failing silently — a console left without line input previously just looked like a hang.
+* `CliDialog` now throws its "Each question entry must be a list consisting of a question and a key" `ArgumentError` for question entries that aren't lists (for example a bare string or a map). Previously these crashed with an unrelated error or, for two-character strings, slipped through validation.
+* In navigation mode with a custom `order`, key lookups now skip plain-string messages (which have no key) instead of indexing into the message text, which could crash on one-character messages or match a key by accident.
+* `StdinService.readLineSync` now falls back to the system encoding when no `encoding` is passed, instead of throwing.
+
+### Chore
+
+* Adopted the `vibe_check` analyzer plugin (Nylo preset) as a dev dependency, with `swallowed_exception` reported as a warning.
+* The publish workflow now uses `actions/checkout@v5`.
+
 ## [2.0.1] - 2026-08-02
 
 ### Changed

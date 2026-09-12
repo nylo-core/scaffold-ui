@@ -83,14 +83,20 @@ void main() {
 
     test('schedules a single supabase_flutter package install', () {
       final prompts = _PromptRecorder(['https://abc.supabase.co', 'eyJanon']);
-      final plan = planAuthSlate(backend: 'Supabase', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Supabase',
+        prompt: prompts.call,
+      );
       expect(plan!.packagesToAdd, ['supabase_flutter']);
     });
 
     test('threads url and anonKey through to the supabase_provider stub', () {
       final prompts = _PromptRecorder(['https://abc.supabase.co', 'eyJanon']);
-      final plan = planAuthSlate(backend: 'Supabase', prompt: prompts.call);
-      final providerStub = plan!.templates
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Supabase',
+        prompt: prompts.call,
+      );
+      final String providerStub = plan!.templates
           .firstWhere((t) => t.name == 'supabase_provider')
           .stub;
       expect(providerStub, contains("url: 'https://abc.supabase.co'"));
@@ -99,7 +105,10 @@ void main() {
 
     test('exposes the slate config so the runtime can template messages', () {
       final prompts = _PromptRecorder(['https://abc.supabase.co', 'eyJanon']);
-      final plan = planAuthSlate(backend: 'Supabase', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Supabase',
+        prompt: prompts.call,
+      );
       expect(plan!.config, isA<NySupabaseSlateConfig>());
       final cfg = plan.config as NySupabaseSlateConfig;
       expect(cfg.url, 'https://abc.supabase.co');
@@ -116,8 +125,11 @@ void main() {
 
     test('strips a trailing slash before building the api-service stub', () {
       final prompts = _PromptRecorder(['https://api.example.com/']);
-      final plan = planAuthSlate(backend: 'Laravel', prompt: prompts.call);
-      final apiStub = plan!.templates
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Laravel',
+        prompt: prompts.call,
+      );
+      final String apiStub = plan!.templates
           .firstWhere((t) => t.name == 'laravel_api_service')
           .stub;
       expect(apiStub, contains("'https://api.example.com/app/v1'"));
@@ -126,13 +138,19 @@ void main() {
 
     test('does not schedule any package installs (Laravel is server-side)', () {
       final prompts = _PromptRecorder(['https://api.example.com']);
-      final plan = planAuthSlate(backend: 'Laravel', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Laravel',
+        prompt: prompts.call,
+      );
       expect(plan!.packagesToAdd, isEmpty);
     });
 
     test('exposes a NyLaravelSlateConfig with the trimmed URL', () {
       final prompts = _PromptRecorder(['https://api.example.com/']);
-      final plan = planAuthSlate(backend: 'Laravel', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Laravel',
+        prompt: prompts.call,
+      );
       expect(plan!.config, isA<NyLaravelSlateConfig>());
       final cfg = plan.config as NyLaravelSlateConfig;
       expect(cfg.url, 'https://api.example.com');
@@ -153,7 +171,10 @@ void main() {
       'schedules firebase_core, firebase_auth and cloud_firestore in order',
       () {
         final prompts = _PromptRecorder(const []);
-        final plan = planAuthSlate(backend: 'Firebase', prompt: prompts.call);
+        final SlatePlan? plan = planAuthSlate(
+          backend: 'Firebase',
+          prompt: prompts.call,
+        );
         expect(plan!.packagesToAdd, [
           'firebase_core',
           'firebase_auth',
@@ -164,14 +185,20 @@ void main() {
 
     test('emits the Firebase user model template', () {
       final prompts = _PromptRecorder(const []);
-      final plan = planAuthSlate(backend: 'Firebase', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Firebase',
+        prompt: prompts.call,
+      );
       expect(plan!.templates.any((t) => t.name == 'user'), isTrue);
       expect(plan.templates.any((t) => t.name == 'firebase_provider'), isTrue);
     });
 
     test('exposes no config (Firebase has none to template into messages)', () {
       final prompts = _PromptRecorder(const []);
-      final plan = planAuthSlate(backend: 'Firebase', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Firebase',
+        prompt: prompts.call,
+      );
       expect(plan!.config, isNull);
     });
   });
@@ -179,15 +206,21 @@ void main() {
   group('planAuthSlate — Basic', () {
     test('does not prompt and schedules no package installs', () {
       final prompts = _PromptRecorder(const []);
-      final plan = planAuthSlate(backend: 'Basic', prompt: prompts.call);
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Basic',
+        prompt: prompts.call,
+      );
       expect(prompts.asked, isEmpty);
       expect(plan!.packagesToAdd, isEmpty);
     });
 
     test('emits the basic landing/login/register/dashboard templates', () {
       final prompts = _PromptRecorder(const []);
-      final plan = planAuthSlate(backend: 'Basic', prompt: prompts.call);
-      final names = plan!.templates.map((t) => t.name).toSet();
+      final SlatePlan? plan = planAuthSlate(
+        backend: 'Basic',
+        prompt: prompts.call,
+      );
+      final Set<String> names = plan!.templates.map((t) => t.name).toSet();
       expect(
         names,
         containsAll([
@@ -204,7 +237,7 @@ void main() {
   group('planAuthSlate — unknown backend', () {
     test('returns null without consuming any prompt', () {
       final prompts = _PromptRecorder(const []);
-      final plan = planAuthSlate(
+      final SlatePlan? plan = planAuthSlate(
         backend: 'NotARealBackend',
         prompt: prompts.call,
       );
@@ -225,7 +258,10 @@ void main() {
 
     test('schedules purchases_flutter then purchases_ui_flutter', () {
       final prompts = _PromptRecorder(['apple_xxx', 'android_yyy']);
-      final plan = planIapSlate(service: 'RevenueCat', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'RevenueCat',
+        prompt: prompts.call,
+      );
       expect(plan!.packagesToAdd, [
         'purchases_flutter',
         'purchases_ui_flutter',
@@ -234,8 +270,11 @@ void main() {
 
     test('threads both keys into the RevenueCat provider stub', () {
       final prompts = _PromptRecorder(['apple_xxx', 'android_yyy']);
-      final plan = planIapSlate(service: 'RevenueCat', prompt: prompts.call);
-      final providerStub = plan!.templates
+      final SlatePlan? plan = planIapSlate(
+        service: 'RevenueCat',
+        prompt: prompts.call,
+      );
+      final String providerStub = plan!.templates
           .firstWhere((t) => t.name == 'revenue_cat_provider')
           .stub;
       expect(providerStub, contains('"apple_xxx"'));
@@ -244,7 +283,10 @@ void main() {
 
     test("normalises 'n' on the Apple key to an empty string", () {
       final prompts = _PromptRecorder(['n', 'android_yyy']);
-      final plan = planIapSlate(service: 'RevenueCat', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'RevenueCat',
+        prompt: prompts.call,
+      );
       final cfg = plan!.config as NyRevenueCatSlateConfig;
       expect(cfg.appleAppId, '');
       expect(cfg.androidAppId, 'android_yyy');
@@ -252,7 +294,10 @@ void main() {
 
     test("normalises 'n' on the Android key to an empty string", () {
       final prompts = _PromptRecorder(['apple_xxx', 'n']);
-      final plan = planIapSlate(service: 'RevenueCat', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'RevenueCat',
+        prompt: prompts.call,
+      );
       final cfg = plan!.config as NyRevenueCatSlateConfig;
       expect(cfg.appleAppId, 'apple_xxx');
       expect(cfg.androidAppId, '');
@@ -262,12 +307,15 @@ void main() {
       "'n' on both keys leaves both empty (everything is just placeholder)",
       () {
         final prompts = _PromptRecorder(['n', 'n']);
-        final plan = planIapSlate(service: 'RevenueCat', prompt: prompts.call);
+        final SlatePlan? plan = planIapSlate(
+          service: 'RevenueCat',
+          prompt: prompts.call,
+        );
         final cfg = plan!.config as NyRevenueCatSlateConfig;
         expect(cfg.appleAppId, '');
         expect(cfg.androidAppId, '');
         // Provider stub must use the placeholder text on both lines.
-        final stub = plan.templates
+        final String stub = plan.templates
             .firstWhere((t) => t.name == 'revenue_cat_provider')
             .stub;
         expect(stub, contains('Your RevenueCat IOS API Key'));
@@ -277,7 +325,10 @@ void main() {
 
     test('exposes a NyRevenueCatSlateConfig with the resolved values', () {
       final prompts = _PromptRecorder(['apple_xxx', 'android_yyy']);
-      final plan = planIapSlate(service: 'RevenueCat', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'RevenueCat',
+        prompt: prompts.call,
+      );
       expect(plan!.config, isA<NyRevenueCatSlateConfig>());
       final cfg = plan.config as NyRevenueCatSlateConfig;
       expect(cfg.appleAppId, 'apple_xxx');
@@ -297,14 +348,20 @@ void main() {
 
     test('schedules superwallkit_flutter as the only package', () {
       final prompts = _PromptRecorder(['apple_xxx', 'android_yyy']);
-      final plan = planIapSlate(service: 'Superwall', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'Superwall',
+        prompt: prompts.call,
+      );
       expect(plan!.packagesToAdd, ['superwallkit_flutter']);
     });
 
     test('threads both keys into the Superwall provider stub', () {
       final prompts = _PromptRecorder(['apple_xxx', 'android_yyy']);
-      final plan = planIapSlate(service: 'Superwall', prompt: prompts.call);
-      final providerStub = plan!.templates
+      final SlatePlan? plan = planIapSlate(
+        service: 'Superwall',
+        prompt: prompts.call,
+      );
+      final String providerStub = plan!.templates
           .firstWhere((t) => t.name == 'superwall_provider')
           .stub;
       expect(providerStub, contains('"apple_xxx"'));
@@ -313,7 +370,10 @@ void main() {
 
     test("normalises 'n' on the Apple key to an empty string", () {
       final prompts = _PromptRecorder(['n', 'android_yyy']);
-      final plan = planIapSlate(service: 'Superwall', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'Superwall',
+        prompt: prompts.call,
+      );
       final cfg = plan!.config as NySuperwallSlateConfig;
       expect(cfg.appleApiKey, '');
       expect(cfg.androidApiKey, 'android_yyy');
@@ -321,7 +381,10 @@ void main() {
 
     test("normalises 'n' on the Android key to an empty string", () {
       final prompts = _PromptRecorder(['apple_xxx', 'n']);
-      final plan = planIapSlate(service: 'Superwall', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'Superwall',
+        prompt: prompts.call,
+      );
       final cfg = plan!.config as NySuperwallSlateConfig;
       expect(cfg.appleApiKey, 'apple_xxx');
       expect(cfg.androidApiKey, '');
@@ -331,12 +394,15 @@ void main() {
       "'n' on both keys leaves both empty (everything is just placeholder)",
       () {
         final prompts = _PromptRecorder(['n', 'n']);
-        final plan = planIapSlate(service: 'Superwall', prompt: prompts.call);
+        final SlatePlan? plan = planIapSlate(
+          service: 'Superwall',
+          prompt: prompts.call,
+        );
         final cfg = plan!.config as NySuperwallSlateConfig;
         expect(cfg.appleApiKey, '');
         expect(cfg.androidApiKey, '');
         // Provider stub must use the placeholder text on both lines.
-        final stub = plan.templates
+        final String stub = plan.templates
             .firstWhere((t) => t.name == 'superwall_provider')
             .stub;
         expect(stub, contains('Your Superwall IOS API Key'));
@@ -346,7 +412,10 @@ void main() {
 
     test('exposes a NySuperwallSlateConfig with the resolved values', () {
       final prompts = _PromptRecorder(['apple_xxx', 'android_yyy']);
-      final plan = planIapSlate(service: 'Superwall', prompt: prompts.call);
+      final SlatePlan? plan = planIapSlate(
+        service: 'Superwall',
+        prompt: prompts.call,
+      );
       expect(plan!.config, isA<NySuperwallSlateConfig>());
       final cfg = plan.config as NySuperwallSlateConfig;
       expect(cfg.appleApiKey, 'apple_xxx');
@@ -357,7 +426,7 @@ void main() {
   group('planIapSlate — unknown service', () {
     test('returns null without consuming any prompt', () {
       final prompts = _PromptRecorder(const []);
-      final plan = planIapSlate(
+      final SlatePlan? plan = planIapSlate(
         service: 'NotARealService',
         prompt: prompts.call,
       );
@@ -372,7 +441,7 @@ void main() {
     });
 
     test('returns the multi-line iOS hint when the Apple key was provided', () {
-      final hint = iosSetupHintFor(appleKeyProvided: true);
+      final String hint = iosSetupHintFor(appleKeyProvided: true);
       expect(hint, contains('IOS Setup'));
       expect(hint, contains('ios/Runner.xcworkspace'));
       expect(hint, contains('In-App Purchase'));
@@ -389,7 +458,7 @@ void main() {
     });
 
     test('mentions iOS 14.0 (Superwall\'s minimum deployment target)', () {
-      final hint = superwallIosSetupHintFor(appleKeyProvided: true);
+      final String hint = superwallIosSetupHintFor(appleKeyProvided: true);
       expect(hint, contains('14.0'));
       expect(hint, contains('ios/Podfile'));
     });
@@ -397,13 +466,13 @@ void main() {
     test('still mentions the In-App Purchase capability + pod repo update', () {
       // Superwall defaults to StoreKit for purchases, so the capability is
       // still required.
-      final hint = superwallIosSetupHintFor(appleKeyProvided: true);
+      final String hint = superwallIosSetupHintFor(appleKeyProvided: true);
       expect(hint, contains('In-App Purchase'));
       expect(hint, contains('cd ios && pod repo update'));
     });
 
     test('ends with a blank line so it composes with "Learn more: ..."', () {
-      final hint = superwallIosSetupHintFor(appleKeyProvided: true);
+      final String hint = superwallIosSetupHintFor(appleKeyProvided: true);
       expect(hint, endsWith('\n\n'));
     });
   });
@@ -414,13 +483,17 @@ void main() {
     });
 
     test('mentions minSdkVersion 26 (Superwall\'s requirement)', () {
-      final hint = superwallAndroidSetupHintFor(androidKeyProvided: true);
+      final String hint = superwallAndroidSetupHintFor(
+        androidKeyProvided: true,
+      );
       expect(hint, contains('minSdkVersion 26'));
       expect(hint, contains('android/app/build.gradle'));
     });
 
     test('ends with a blank line so it composes with "Learn more: ..."', () {
-      final hint = superwallAndroidSetupHintFor(androidKeyProvided: true);
+      final String hint = superwallAndroidSetupHintFor(
+        androidKeyProvided: true,
+      );
       expect(hint, endsWith('\n\n'));
     });
   });
@@ -438,7 +511,9 @@ void main() {
 ''';
 
     test('inserts the SuperwallPaywallActivity inside <application>', () {
-      final patched = patchAndroidManifestForSuperwall(minimalManifest);
+      final PatchedManifest patched = patchAndroidManifestForSuperwall(
+        minimalManifest,
+      );
       expect(patched.result, AndroidManifestPatchResult.added);
       expect(
         patched.content,
@@ -446,8 +521,8 @@ void main() {
       );
       // The new activity must be inside <application> — i.e. before
       // </application>.
-      final supIdx = patched.content.indexOf('SuperwallPaywallActivity');
-      final closeIdx = patched.content.indexOf('</application>');
+      final int supIdx = patched.content.indexOf('SuperwallPaywallActivity');
+      final int closeIdx = patched.content.indexOf('</application>');
       expect(supIdx, greaterThan(0));
       expect(supIdx, lessThan(closeIdx));
     });
@@ -457,7 +532,9 @@ void main() {
       // Theme.MaterialComponents.DayNight.NoActionBar. The plugin's bundled
       // manifest uses Theme.AppCompat.NoActionBar; our injection wins via
       // manifest-merger priority so the consumer ends up with Material.
-      final patched = patchAndroidManifestForSuperwall(minimalManifest);
+      final PatchedManifest patched = patchAndroidManifestForSuperwall(
+        minimalManifest,
+      );
       expect(
         patched.content,
         contains('Theme.MaterialComponents.DayNight.NoActionBar'),
@@ -465,13 +542,19 @@ void main() {
     });
 
     test('preserves existing activities (MainActivity stays put)', () {
-      final patched = patchAndroidManifestForSuperwall(minimalManifest);
+      final PatchedManifest patched = patchAndroidManifestForSuperwall(
+        minimalManifest,
+      );
       expect(patched.content, contains('android:name=".MainActivity"'));
     });
 
     test('is idempotent — re-running leaves the manifest untouched', () {
-      final first = patchAndroidManifestForSuperwall(minimalManifest);
-      final second = patchAndroidManifestForSuperwall(first.content);
+      final PatchedManifest first = patchAndroidManifestForSuperwall(
+        minimalManifest,
+      );
+      final PatchedManifest second = patchAndroidManifestForSuperwall(
+        first.content,
+      );
       expect(second.result, AndroidManifestPatchResult.alreadyRegistered);
       expect(second.content, first.content);
     });
@@ -481,7 +564,7 @@ void main() {
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 </manifest>
 ''';
-      final patched = patchAndroidManifestForSuperwall(noApp);
+      final PatchedManifest patched = patchAndroidManifestForSuperwall(noApp);
       expect(patched.result, AndroidManifestPatchResult.malformedManifest);
       expect(patched.content, noApp);
     });

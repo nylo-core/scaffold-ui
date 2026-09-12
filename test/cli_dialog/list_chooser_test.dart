@@ -18,7 +18,7 @@ void main() {
     });
 
     test('Enter at the top picks the first item', () {
-      final chooser = _chooser(
+      final ListChooser chooser = _chooser(
         ['Supabase', 'Laravel', 'Firebase', 'Basic'],
         [Keys.enter],
       );
@@ -26,7 +26,7 @@ void main() {
     });
 
     test('arrowDown then Enter picks the second item', () {
-      final chooser = _chooser(
+      final ListChooser chooser = _chooser(
         ['Supabase', 'Laravel', 'Firebase', 'Basic'],
         [...Keys.arrowDown, Keys.enter],
       );
@@ -34,7 +34,7 @@ void main() {
     });
 
     test('multiple arrowDowns walk the list and stop at the last item', () {
-      final chooser = _chooser(
+      final ListChooser chooser = _chooser(
         ['Supabase', 'Laravel', 'Firebase', 'Basic'],
         [...Keys.arrowDown, ...Keys.arrowDown, ...Keys.arrowDown, Keys.enter],
       );
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('arrowDown past the end clamps to the last item', () {
-      final chooser = _chooser(
+      final ListChooser chooser = _chooser(
         ['only', 'two'],
         [
           ...Keys.arrowDown,
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('arrowUp at the top clamps to the first item', () {
-      final chooser = _chooser(
+      final ListChooser chooser = _chooser(
         ['first', 'second'],
         [
           ...Keys.arrowUp, // already at index 0; should not underflow
@@ -66,7 +66,7 @@ void main() {
     });
 
     test('down twice then up once lands on the middle item', () {
-      final chooser = _chooser(
+      final ListChooser chooser = _chooser(
         ['a', 'b', 'c', 'd'],
         [...Keys.arrowDown, ...Keys.arrowDown, ...Keys.arrowUp, Keys.enter],
       );
