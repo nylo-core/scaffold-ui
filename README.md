@@ -49,10 +49,10 @@ dart pub add scaffold_ui
 This will add the following to your pubspec.yaml:
 ```yaml
 dependencies:
-  scaffold_ui: ^2.0.2
+  scaffold_ui: ^2.0.3
 ```
 
-> **Upgrading from 1.x?** 2.0.0 targets Nylo v7 (`nylo_framework: ^7.1.16`+) and requires Dart `^3.10.7`. See the [CHANGELOG](https://github.com/nylo-core/scaffold-ui/blob/2.x/CHANGELOG.md) for breaking changes.
+> **Upgrading from 1.x?** 2.x targets Nylo v7 (`nylo_framework: ^7.1.16`+) and requires Dart `^3.12.0` and Flutter `3.44.0`+. See the [CHANGELOG](https://github.com/nylo-core/scaffold-ui/blob/2.x/CHANGELOG.md) for breaking changes.
 
 ## Setup Guides
 

@@ -1,3 +1,15 @@
+## [2.0.3] - 2026-09-13
+
+### Changed
+
+* Raised the declared SDK constraints from Dart `^3.10.7` / Flutter `>=1.17.0` to Dart `^3.12.0` / Flutter `>=3.44.0`. This is not a new requirement: `nylo_support ^7.29.0` (the dependency floor since 2.0.2) already needs Dart `^3.12.0` and Flutter `>=3.44.0`, so anyone who could install 2.0.2 can install this release.
+* `NyLaravelSlateConfig` now declares its URL with a private named parameter (`required this._url`, a Dart 3.12 language feature) instead of an initializer list. Callers still pass `NyLaravelSlateConfig(url: ...)`.
+
+### Chore
+
+* The example app's SDK constraint moves from the Dart 2 range `>=2.19.0 <3.0.0` to `^3.12.0` with Flutter `>=3.44.0`, and `example/main.dart` is reformatted in the current `dart format` style.
+* The README's "Upgrading from 1.x?" note now lists Dart `^3.12.0` and Flutter `3.44.0`+ (it previously said Dart `^3.10.7`).
+
 ## [2.0.2] - 2026-09-13
 
 ### Changed
