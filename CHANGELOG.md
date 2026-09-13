@@ -1,3 +1,9 @@
+## [2.0.4] - 2026-09-13
+
+### Chore
+
+* Removed stray whitespace after `version:` in the `vibe_check` plugin block of `analysis_options.yaml` (introduced in 2.0.3). No functional or API changes.
+
 ## [2.0.3] - 2026-09-13
 
 ### Changed

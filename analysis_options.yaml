@@ -8,7 +8,7 @@ analyzer:
 include: package:vibe_check/nylo.yaml
 plugins:
   vibe_check:
-    version:   ^1.0.1
+    version: ^1.0.1
     diagnostics:
       swallowed_exception: warning
       redundant_null_check: true
