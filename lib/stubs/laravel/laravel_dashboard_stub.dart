@@ -1,6 +1,6 @@
 /// DashboardPage stub
 String stubLaravelDashboard() => '''
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import '/app/events/logout_event.dart';
 import '/app/models/user.dart';

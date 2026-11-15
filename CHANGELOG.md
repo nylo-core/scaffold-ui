@@ -1,3 +1,17 @@
+## [2.0.5] - 2026-11-15
+
+### Changed
+
+* Generated pages and controllers (login, register, forgot password, landing, dashboards, paywalls, and the Laravel forgot-password controller) now import `package:material_ui/material_ui.dart` instead of `package:flutter/material.dart`. This follows Material moving out of the Flutter SDK into the `material_ui` package.
+* Bumped the `nylo_support` dependency from `^7.29.0` to `^7.38.0`, and added `material_ui: ^1.11.0` as a dependency.
+* Raised the declared SDK constraints from Dart `^3.12.0` / Flutter `>=3.44.0` to Dart `^3.13.0` / Flutter `>=3.47.0`. `nylo_support ^7.38.0` already requires these versions. Because `nylo_support` 7.38.0 depends on `material_ui`, any app that can install this release can also resolve the new imports in the generated files.
+
+### Chore
+
+* The example app now depends on `material_ui`, imports it in place of `flutter/material.dart`, and uses the same Dart `^3.13.0` / Flutter `>=3.47.0` constraints.
+* Added blank lines between import groups in the `cli_dialog` sources.
+* The README's "Upgrading from 1.x?" note now lists Dart `^3.13.0` and Flutter `3.47.0`+.
+
 ## [2.0.4] - 2026-09-13
 
 ### Chore

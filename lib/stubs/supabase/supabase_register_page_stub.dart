@@ -1,6 +1,6 @@
 String stubSupabaseRegister() => '''
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import '/resources/widgets/buttons/buttons.dart';
 import '/app/controllers/register_controller.dart';

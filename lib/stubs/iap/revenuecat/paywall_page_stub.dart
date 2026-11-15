@@ -1,5 +1,5 @@
 String stubRevenueCatPaywall() => '''
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import 'package:purchases_ui_flutter/purchases_ui_flutter.dart';
 

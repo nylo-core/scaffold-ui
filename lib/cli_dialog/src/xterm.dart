@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'keys.dart';
 
 /// Abstract class providing some key codes which can be statically accessed.

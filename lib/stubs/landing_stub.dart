@@ -1,7 +1,7 @@
 /// LandingPage stub
 String stubLandingPage() => '''
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import 'dart:async';
 import 'dart:ui';

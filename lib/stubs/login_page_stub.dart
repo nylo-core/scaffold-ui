@@ -1,5 +1,5 @@
 String stubLoginPage() => '''
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import '/resources/pages/forgot_password_page.dart';
 import '/app/controllers/login_controller.dart';

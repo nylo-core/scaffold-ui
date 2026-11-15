@@ -1,5 +1,5 @@
 String stubLaravelForgotPasswordController() => '''
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nylo_framework/nylo_framework.dart';
 import '/app/networking/laravel_auth_api_service.dart';
 import 'controller.dart';

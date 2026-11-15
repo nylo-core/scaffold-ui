@@ -2,7 +2,7 @@
 String stubFirebaseDashboard() => '''
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:nylo_framework/nylo_framework.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '/app/events/logout_event.dart';
 import '/bootstrap/extensions.dart';
 import '/bootstrap/helpers.dart';
